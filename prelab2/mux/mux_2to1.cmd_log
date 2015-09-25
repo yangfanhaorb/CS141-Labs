@@ -1,0 +1,1 @@
+vhdtdtfi -lang verilog -prj mux -o C:/Users/cs141/Desktop/prelab2/mux/mux_2to1.tfi -lib work C:/Users/cs141/Desktop/prelab2/mux//mux_2to1.v -module mux_2to1 -template C:/Xilinx/14.7/ISE_DS/ISE//data/tfi.tft -deleteonerror 

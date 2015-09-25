@@ -1,0 +1,12 @@
+
+
+
+// Instantiate the module
+mux_2to1 instance_name (
+    .X(X), 
+    .Y(Y), 
+    .S(S), 
+    .Z(Z)
+    );
+
+
