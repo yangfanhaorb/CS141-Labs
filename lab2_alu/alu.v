@@ -36,6 +36,21 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 	
 	//NOR
 	assign nor_out = ~(X | Y);
+
+	//ADD
+	add_rca_32 OUTPUT_ADD (
+		.X(X),
+		.Y(Y),
+		.sum(add_out),
+		.overflow(add_overflow)
+	);
+
+	//SUB
+	sub_func OUTPUT_SUB (
+		.X(X),
+		.Y(Y),
+		.difference(sub_out)
+	)
 	
 	//SRL
 	
