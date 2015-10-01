@@ -1,0 +1,10 @@
+Command line:
+   test_SRL_isim_beh.exe
+     -simmode  gui
+     -simrunnum  0
+     -socket  51322
+
+Thu Oct 01 17:14:50 2015
+
+
+ Elaboration Time: 0.046875 sec
