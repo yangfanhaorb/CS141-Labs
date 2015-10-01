@@ -7,26 +7,27 @@
 // Author(s): Fanhao Yang, Thomas Esch
 //////////////////////////////////////////////////////////////////////////////////
 
-module add_rca_2_bit(X,Y,sum,overflow);
+module add_rca_2_bit(X,Y,ci,sum,co);
 	input wire [1:0] X, Y;
+	input wire ci;
 	output wire [1:0] sum;
-	output wire overflow;
-	wire co_1;
+	output wire co;
+	wire co_int_1;
 
 	full_adder adder_1 (
 		.X  (X[0]),
 		.Y  (Y[0]),
-		.ci (0),
+		.ci (ci),
 		.sum(sum[0]),
-		.co (co_1)
+		.co (co_int_1)
 	);
 
 	full_adder adder_2 (
 		.X  (X[1]),
 		.Y  (Y[1]),
-		.ci (co_1),
+		.ci (co_int_1),
 		.sum(sum[1]),
-		.co (overflow),
+		.co (co)
 	);
 	
 endmodule
