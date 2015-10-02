@@ -5,20 +5,5 @@
      behavior or data corruption.  It is strongly advised that
      users do not edit the contents of this file. -->
 <messages>
-<msg type="warning" file="HDLCompiler" num="327" delta="old" >"C:\Users\cs141\Documents\GitHub\CS141-Labs\lab2_alu\SRL.v" Line 29: Concatenation with unsized literal; will interpret as 32 bits
-</msg>
-
-<msg type="warning" file="HDLCompiler" num="327" delta="old" >"C:\Users\cs141\Documents\GitHub\CS141-Labs\lab2_alu\SRL.v" Line 43: Concatenation with unsized literal; will interpret as 32 bits
-</msg>
-
-<msg type="warning" file="HDLCompiler" num="327" delta="old" >"C:\Users\cs141\Documents\GitHub\CS141-Labs\lab2_alu\SRL.v" Line 50: Concatenation with unsized literal; will interpret as 32 bits
-</msg>
-
-<msg type="warning" file="HDLCompiler" num="327" delta="old" >"C:\Users\cs141\Documents\GitHub\CS141-Labs\lab2_alu\SRL.v" Line 57: Concatenation with unsized literal; will interpret as 32 bits
-</msg>
-
-<msg type="warning" file="HDLCompiler" num="327" delta="old" >"C:\Users\cs141\Documents\GitHub\CS141-Labs\lab2_alu\SRL.v" Line 64: Concatenation with unsized literal; will interpret as 32 bits
-</msg>
-
 </messages>
 

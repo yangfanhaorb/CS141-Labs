@@ -50,11 +50,11 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 		.X(X),
 		.Y(Y),
 		.difference(sub_out)
-	)
+	);
 	
 	//SRL
 	
-	
+	SRL Shift_Right_Logical (.X(X) , .Y(Y) , .Z(srl_out));
 	
 	// xor32 implementation
 	assign xor_out = X ^ Y;
