@@ -20,8 +20,9 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 	input  wire [3:0] op_code;
 	
 	output wire equal, overflow, zero;
+	wire overflow_placeholder;
 	
-	wire [31:0] and_out, or_out, xor_out, nor_out, add_out, sub_out, slt_out, srl_out, sll_out, sra_out;
+	wire [31:0] and_out, or_out, xor_out, nor_out, add_or_sub_out, sub_out, slt_out, srl_out, sll_out, sra_out;
 	
 	//functional blocks
 	
@@ -37,22 +38,30 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 	//NOR
 	assign nor_out = ~(X | Y);
 
-	//ADD
+	//ADD OR SUB
 	adder_substractor OUTPUT_ADD (
 		.X(X),
 		.Y(Y),
 		.add_or_substract(op_code[0]),
-		.sum(add_out),
+		.sum(add_or_sub_out),
 		.overflow(overflow)
 	);
 
-	//SUB
+	//SUB JUST FOR SLT
 	adder_substractor OUTPUT_SUB (
 		.X(X),
 		.Y(Y),
-		.add_or_substract(op_code[0]),
+		.add_or_substract(0),
+		.sum(sub_out),
+		.overflow(overflow_placeholder)
+	);
+	
+	
+	//SLT
+	comparator OUTPUT_SLT (
 		.diff(sub_out),
-		.overflow(overflow)
+		.slt(slt_out),
+		.equal(equal)
 	);
 	
 	//SRL
