@@ -18,7 +18,7 @@ module comparator(diff,slt,equal);
 	output wire [31:0] slt;
 	output wire equal;
 	
-	assign slt = {32{diff[31]}};
+	assign slt = diff[31];
 	assign equal = ~(|diff);
 
 endmodule

@@ -11,7 +11,6 @@ module add_rca_2_bit_test;
 	reg [1:0] X;
 	reg [1:0] Y;
 	reg ci;
-	reg [2:0] Z;
 
 	// Outputs
 	wire [1:0] sum;

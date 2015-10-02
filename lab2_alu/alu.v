@@ -102,7 +102,7 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
     .Z(Z)
     );
 	 
-	 
+	 assign zero  = &(~(Z|0));
 
 
 
