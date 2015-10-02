@@ -11,8 +11,7 @@ module half_adder(X,Y,sum,co);
 	input wire X, Y;
 	output wire sum, co;
 
-
-	sum = X ^ Y;
-	co = X & Y;
+	assign sum = X ^ Y;
+	assign co = X & Y;
 endmodule
 `default_nettype wire //some Xilinx IP requires that the default_nettype be set to wire

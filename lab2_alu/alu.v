@@ -38,7 +38,7 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 	assign nor_out = ~(X | Y);
 
 	//ADD
-	add_rca_32 OUTPUT_ADD (
+	add_rca_32_bit OUTPUT_ADD (
 		.X(X),
 		.Y(Y),
 		.sum(add_out),
@@ -46,10 +46,11 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 	);
 
 	//SUB
-	sub_func OUTPUT_SUB (
+	sub_rca_32_bit OUTPUT_SUB (
 		.X(X),
 		.Y(Y),
-		.difference(sub_out)
+		.difference(sub_out),
+		.overflow(sub_overflow)
 	);
 	
 	//SRL
@@ -60,7 +61,7 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 	assign xor_out = X ^ Y;
 	
 	//output mux
-	mux_16_1 #(.N(32)) OUTPUT_MUX (
+	mux_16to1 #(.N(32)) OUTPUT_MUX (
     .in0(and_out), 
     .in1(or_out), 
     .in2(xor_out), 

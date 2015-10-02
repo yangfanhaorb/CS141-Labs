@@ -1,1 +1,0 @@
--intstyle "ise" -incremental -lib "unisims_ver" -lib "unimacro_ver" -lib "xilinxcorelib_ver" -lib "secureip" -o "C:/Users/cs141/Documents/GitHub/CS141-Labs/lab2_alu/test_SRA_isim_beh.exe" -prj "C:/Users/cs141/Documents/GitHub/CS141-Labs/lab2_alu/test_SRA_beh.prj" "work.test_SRA" "work.glbl" 
