@@ -1,0 +1,10 @@
+Command line:
+   test_SRA_isim_beh.exe
+     -simmode  gui
+     -simrunnum  0
+     -socket  51754
+
+Thu Oct 01 21:47:40 2015
+
+
+ Elaboration Time: 0.03125 sec

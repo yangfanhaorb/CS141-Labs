@@ -9,7 +9,7 @@
 //
 //
 //////////////////////////////////////////////////////////////////////////////////
-module param_4_to_1_mux(A,B,C,D,S,Z);
+module param_8_to_1_mux(A,B,C,D,E,F,G,H,S,Z);
 
 	//parameter definitions
 	parameter width = 8; //default is 8 bit width
@@ -25,8 +25,8 @@ module param_4_to_1_mux(A,B,C,D,S,Z);
 	wire [(width-1) : 0 ] mux_1_out;
 	wire mux_2_out; 
 	
-	param_4_to_1_mux #(.N(width)) MUX_0 (.X(A) , .Y(B) , .S(S[1:0]) , .Z(mux_0_out));
-	param_4_to_1_mux #(.N(width)) MUX_1 (.X(C) , .Y(D) , .S(S[1:0]) , .Z(mux_1_out));
+	param_4_to_1_mux #(.N(width)) MUX_0 (.A(A) , .B(B) , .C(C), .D(D), .S(S[1:0]) , .Z(mux_0_out));
+	param_4_to_1_mux #(.N(width)) MUX_1 (.A(E) , .B(E) , .C(F), .D(G), .S(S[1:0]) , .Z(mux_1_out));
 	param_2_to_1_mux #(.N(width)) MUX_2 (.X(mux_0_out) , .Y(mux_1_out) , .S(S[2]) , .Z(Z));
 	
 	//assign Z = mux_0_out;
