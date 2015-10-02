@@ -44,7 +44,7 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 		.X(X),
 		.Y(Y),
 		.add_or_substract(op_code[0]),
-		.sum(add_or_sub_out),
+		.out(add_or_sub_out),
 		.overflow(overflow)
 	);
 
@@ -53,7 +53,7 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 		.X(X),
 		.Y(Y),
 		.add_or_substract(0),
-		.sum(sub_out),
+		.out(sub_out),
 		.overflow(overflow_placeholder)
 	);
 	
@@ -81,23 +81,23 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 	assign xor_out = X ^ Y;
 	
 	//output mux
-	mux_16to1 #(.N(32)) OUTPUT_MUX (
-    .in0(and_out), 
-    .in1(or_out), 
-    .in2(xor_out), 
-    .in3(nor_out), 
-    .in4(0), 
+	pmux_16_to_1 #(.width(32)) OUTPUT_MUX (
+    .in1(and_out), 
+    .in2(or_out), 
+    .in3(xor_out), 
+    .in4(nor_out), 
     .in5(0), 
-    .in6(0), 
-    .in7(0), 
-    .in8(0), 
-    .in9(0), 
-    .in10(0), 
-    .in11(0), 
+    .in6(add_or_sub_out), 
+    .in7(add_or_sub_out), 
+    .in8(slt_out), 
+    .in9(srl_out), 
+    .in10(sll_out), 
+    .in11(sra_out), 
     .in12(0), 
     .in13(0), 
     .in14(0), 
     .in15(0), 
+    .in16(0), 
     .S(op_code), 
     .Z(Z)
     );

@@ -91,23 +91,66 @@ module test_alu;
 				end
 			end
 			// ADD IN YOUR OWN OP CODE CHECKERS HERE!!!
-			`ALU_OP_AND: begin
-			end
+			
 			`ALU_OP_OR : begin
+				if (Z !== (X | Y) ) begin
+					$display("ERROR: OR:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+					error = error + 1;
+				end
+				
 			end
 			`ALU_OP_NOR: begin
+				if (Z !== ~(X | Y) ) begin
+					$display("ERROR: NOR:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+					error = error + 1;
+				end
+				
 			end
 			`ALU_OP_ADD: begin
+				if (Z !== (X + Y) ) begin
+					$display("ERROR: ADD:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+					error = error + 1;
+				end
+			
 			end
 			`ALU_OP_SUB: begin
+				if (Z !== (X - Y) ) begin
+					$display("ERROR: SUB:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+					error = error + 1;
+				end
+			
 			end
 			`ALU_OP_SLT: begin
+				if ((X < Y) && (Z !==32'd1) ) begin
+					$display("ERROR: SLT:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+					error = error + 1;
+				end
+				if ((X > Y) && (Z !==32'd0) ) begin
+					$display("ERROR: SLT:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+					error = error + 1;
+				end
+			
 			end
 			`ALU_OP_SRL: begin
+				if (Z !== (X >> Y) ) begin
+					$display("ERROR: SRL:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+					error = error + 1;
+				end
+			
 			end
 			`ALU_OP_SLL: begin
+				if (Z !== (X << Y) ) begin
+					$display("ERROR: SLL:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+					error = error + 1;
+				end
+			
 			end
 			`ALU_OP_SRA: begin
+				if (Z !== (X >>> Y) ) begin
+					$display("ERROR: SLL:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+					error = error + 1;
+				end
+			
 			end
 			default : begin
 				//executes at default
