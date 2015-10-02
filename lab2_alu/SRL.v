@@ -25,8 +25,7 @@ module SRL(X,Y,Z);
 	wire [31:0] out_2;
 	wire [31:0] out_1;
 	
-	//assign out_16 = Z[31:0];//[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Z[31:16]];
-	assign out_16 = {16'b0000000000000000,X[31:16]};
+	
 	
 	// intermediary wires
 	wire [31:0] shift4out;
@@ -34,9 +33,17 @@ module SRL(X,Y,Z);
 	wire [31:0] shift2out;
 	wire [31:0] shift1out;
 	wire [31:0] shift0out;
+	wire [31:0] alltheway;
+	
+	//make all 0 if shfiting more than 31
+	param_2_to_1_mux #(.N(32)) MUX_init (.X(X) , .Y(0) , .S( |Y[31:5]) , .Z(alltheway));
+
+
+	//assign out_16 = Z[31:0];//[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Z[31:16]];
+	assign out_16 = {16'b0000000000000000,alltheway[31:16]};
 
 	//choose between 16 bit shift or skip
-	param_2_to_1_mux #(.N(32)) MUX_0 (.X(X) , .Y(out_16) , .S(Y[4]) , .Z(shift4out));
+	param_2_to_1_mux #(.N(32)) MUX_0 (.X(alltheway) , .Y(out_16) , .S(Y[4]) , .Z(shift4out));
 	
 	//8 bit shift
 	//assign wire [31:0] out_8 = {0,0,0,0,0,0,0,0,shift4out[31:8]};
