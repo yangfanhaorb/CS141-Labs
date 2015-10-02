@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<generated_project xmlns="http://www.xilinx.com/XMLSchema" xmlns:xil_pn="http://www.xilinx.com/XMLSchema">
+
+  <!--                                                          -->
+
+  <!--             For tool use only. Do not edit.              -->
+
+  <!--                                                          -->
+
+  <!-- ProjectNavigator created generated project file.         -->
+
+  <!-- For use in tracking generated file and other information -->
+
+  <!-- allowing preservation of process status.                 -->
+
+  <!--                                                          -->
+
+  <!-- Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved. -->
+
+  <version xmlns="http://www.xilinx.com/XMLSchema">11.1</version>
+
+  <sourceproject xmlns="http://www.xilinx.com/XMLSchema" xil_pn:fileType="FILE_XISE" xil_pn:name="lab2_alu.xise"/>
+
+  <files xmlns="http://www.xilinx.com/XMLSchema">
+    <file xil_pn:fileType="FILE_VERILOG_INSTTEMPLATE" xil_pn:name="add_rca_2_bit.tfi"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="add_rca_2_bit_test_isim_beh.exe"/>
+    <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="add_rca_32_bit_test_beh.prj"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="add_rca_32_bit_test_isim_beh.exe"/>
+    <file xil_pn:fileType="FILE_ISIM_MISC" xil_pn:name="add_rca_32_bit_test_isim_beh.wdb"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="add_rca_8_bit_test_isim_beh.exe"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="full_adder_test_isim_beh.exe"/>
+    <file xil_pn:fileType="FILE_LOG" xil_pn:name="fuse.log"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="half_adder_test_isim_beh.exe"/>
+    <file xil_pn:fileType="FILE_DIRECTORY" xil_pn:name="isim"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_CMD" xil_pn:name="isim.cmd"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_LOG" xil_pn:name="isim.log"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_ISIM_EXE" xil_pn:name="mux_16to1_test_isim_beh.exe"/>
+    <file xil_pn:branch="BehavioralSim" xil_pn:fileType="FILE_INI" xil_pn:name="xilinxsim.ini"/>
+  </files>
+
+  <transforms xmlns="http://www.xilinx.com/XMLSchema">
+    <transform xil_pn:end_ts="1443721213" xil_pn:name="TRAN_copyInitialToAbstractSimulation" xil_pn:start_ts="1443721213">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="ReadyToRun"/>
+    </transform>
+    <transform xil_pn:end_ts="1443738226" xil_pn:in_ck="-2024278550320291889" xil_pn:name="TRAN_copyAbstractToPostAbstractSimulation" xil_pn:start_ts="1443738226">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="ReadyToRun"/>
+      <outfile xil_pn:name="add_rca_2_bit.v"/>
+      <outfile xil_pn:name="add_rca_2_bit_test.v"/>
+      <outfile xil_pn:name="add_rca_32_bit.v"/>
+      <outfile xil_pn:name="add_rca_32_bit_test.v"/>
+      <outfile xil_pn:name="add_rca_8_bit.v"/>
+      <outfile xil_pn:name="add_rca_8_bit_test.v"/>
+      <outfile xil_pn:name="alu.v"/>
+      <outfile xil_pn:name="alu_defines.v"/>
+      <outfile xil_pn:name="bad_xor32.v"/>
+      <outfile xil_pn:name="full_adder.v"/>
+      <outfile xil_pn:name="full_adder_test.v"/>
+      <outfile xil_pn:name="half_adder.v"/>
+      <outfile xil_pn:name="half_adder_test.v"/>
+      <outfile xil_pn:name="mux_16_1.v"/>
+      <outfile xil_pn:name="mux_2_1.v"/>
+      <outfile xil_pn:name="mux_4_1.v"/>
+      <outfile xil_pn:name="sub_func.v"/>
+      <outfile xil_pn:name="test_alu.v"/>
+      <outfile xil_pn:name="test_mux_16_1.v"/>
+      <outfile xil_pn:name="test_mux_2_1.v"/>
+      <outfile xil_pn:name="test_mux_4_1.v"/>
+    </transform>
+    <transform xil_pn:end_ts="1443736952" xil_pn:name="TRAN_xawsToSimhdl" xil_pn:prop_ck="-8533164959348024362" xil_pn:start_ts="1443736952">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="ReadyToRun"/>
+    </transform>
+    <transform xil_pn:end_ts="1443736952" xil_pn:name="TRAN_schematicsToHdlSim" xil_pn:prop_ck="-3363690927235063916" xil_pn:start_ts="1443736952">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="ReadyToRun"/>
+    </transform>
+    <transform xil_pn:end_ts="1443721213" xil_pn:name="TRAN_regenerateCoresSim" xil_pn:prop_ck="3626181723981822728" xil_pn:start_ts="1443721213">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="ReadyToRun"/>
+    </transform>
+    <transform xil_pn:end_ts="1443738226" xil_pn:in_ck="-2024278550320291889" xil_pn:name="TRAN_copyPostAbstractToPreSimulation" xil_pn:start_ts="1443738226">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="ReadyToRun"/>
+      <outfile xil_pn:name="add_rca_2_bit.v"/>
+      <outfile xil_pn:name="add_rca_2_bit_test.v"/>
+      <outfile xil_pn:name="add_rca_32_bit.v"/>
+      <outfile xil_pn:name="add_rca_32_bit_test.v"/>
+      <outfile xil_pn:name="add_rca_8_bit.v"/>
+      <outfile xil_pn:name="add_rca_8_bit_test.v"/>
+      <outfile xil_pn:name="alu.v"/>
+      <outfile xil_pn:name="alu_defines.v"/>
+      <outfile xil_pn:name="bad_xor32.v"/>
+      <outfile xil_pn:name="full_adder.v"/>
+      <outfile xil_pn:name="full_adder_test.v"/>
+      <outfile xil_pn:name="half_adder.v"/>
+      <outfile xil_pn:name="half_adder_test.v"/>
+      <outfile xil_pn:name="mux_16_1.v"/>
+      <outfile xil_pn:name="mux_2_1.v"/>
+      <outfile xil_pn:name="mux_4_1.v"/>
+      <outfile xil_pn:name="sub_func.v"/>
+      <outfile xil_pn:name="test_alu.v"/>
+      <outfile xil_pn:name="test_mux_16_1.v"/>
+      <outfile xil_pn:name="test_mux_2_1.v"/>
+      <outfile xil_pn:name="test_mux_4_1.v"/>
+    </transform>
+    <transform xil_pn:end_ts="1443738227" xil_pn:in_ck="-2024278550320291889" xil_pn:name="TRAN_ISimulateBehavioralModelRunFuse" xil_pn:prop_ck="8592474836196677547" xil_pn:start_ts="1443738226">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="ReadyToRun"/>
+      <outfile xil_pn:name="add_rca_32_bit_test_beh.prj"/>
+      <outfile xil_pn:name="add_rca_32_bit_test_isim_beh.exe"/>
+      <outfile xil_pn:name="fuse.log"/>
+      <outfile xil_pn:name="isim"/>
+      <outfile xil_pn:name="isim.log"/>
+      <outfile xil_pn:name="xilinxsim.ini"/>
+    </transform>
+    <transform xil_pn:end_ts="1443738228" xil_pn:in_ck="-7812068504160202316" xil_pn:name="TRAN_ISimulateBehavioralModel" xil_pn:prop_ck="-2507194518950488658" xil_pn:start_ts="1443738227">
+      <status xil_pn:value="SuccessfullyRun"/>
+      <status xil_pn:value="ReadyToRun"/>
+      <outfile xil_pn:name="add_rca_32_bit_test_isim_beh.wdb"/>
+      <outfile xil_pn:name="isim.cmd"/>
+      <outfile xil_pn:name="isim.log"/>
+    </transform>
+  </transforms>
+
+</generated_project>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="/home/avinash/src/hdl/atlys_demos/lab2_alu/test_alu_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="test_alu" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="7" />
+   <wvobject fp_name="/test_alu/op_code" type="array" db_ref_id="1">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">op_code[3:0]</obj_property>
+      <obj_property name="ObjectShortName">op_code[3:0]</obj_property>
+      <obj_property name="label">op_code[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_alu/Z" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">Z[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Z[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_alu/X" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">X[31:0]</obj_property>
+      <obj_property name="ObjectShortName">X[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_alu/Y" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">Y[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Y[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_alu/equal" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">equal</obj_property>
+      <obj_property name="ObjectShortName">equal</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_alu/overflow" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">overflow</obj_property>
+      <obj_property name="ObjectShortName">overflow</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_alu/zero" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">zero</obj_property>
+      <obj_property name="ObjectShortName">zero</obj_property>
+   </wvobject>
+</wave_config>
