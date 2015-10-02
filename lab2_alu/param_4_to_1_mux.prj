@@ -1,0 +1,3 @@
+verilog work "param_2_to_1_mux.v"
+verilog work "param_4_to_1_mux.v"
+verilog work "param_8_to_1_mux.v"

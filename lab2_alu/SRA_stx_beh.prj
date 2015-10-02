@@ -1,0 +1,4 @@
+verilog isim_temp "param_2_to_1_mux.v"
+verilog isim_temp "param_8_to_1_mux.v"
+verilog isim_temp "SRA.v"
+verilog isim_temp "C:/Xilinx/14.7/ISE_DS/ISE//verilog/src/glbl.v"

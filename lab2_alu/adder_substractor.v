@@ -5,13 +5,13 @@
 // CS 141 - Fall 2015
 // Module Name:    adder_substractor 
 // Author(s): 
-// Description: 
+// Description: This does addition or substraction according to add_or_substract
+//              For 0, it will do substraction; for 1, it will do addition
 //
 //
 //////////////////////////////////////////////////////////////////////////////////
 module adder_substractor(X,Y,add_or_substract,out,overflow);
 
-	//parameter definitions
 
 	//port definitions - customize for different bit widths
 	input  wire [31:0] X;
