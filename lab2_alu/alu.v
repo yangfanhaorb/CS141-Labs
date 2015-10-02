@@ -21,7 +21,7 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 	
 	output wire equal, overflow, zero;
 	
-	wire [31:0] and_out, or_out, xor_out, nor_out, add_out, sub_out, slt_out, srl_out, sll_out, sra_out;
+	wire [31:0] and_out, or_out, xor_out, nor_out, add_out, sub_out, slt_out, srl_out, sll_out, sra_out,add_overflow,sub_overflow;
 	
 	//functional blocks
 	
@@ -56,6 +56,14 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 	//SRL
 	
 	SRL Shift_Right_Logical (.X(X) , .Y(Y) , .Z(srl_out));
+	
+	//SLL
+	
+	SLL Shift_Left_Logical (.X(X) , .Y(Y) , .Z(sll_out));
+	
+	//SRA
+	
+	SRA Shift_Right_ARM (.X(X) , .Y(Y) , .Z(sra_out));
 	
 	// xor32 implementation
 	assign xor_out = X ^ Y;

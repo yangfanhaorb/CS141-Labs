@@ -8,5 +8,8 @@
 <!-- Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.    -->
 
 <messages>
+<msg type="info" file="ProjectMgmt" num="1845" ><arg fmt="%s" index="1">Analyzing Verilog file &quot;C:/Users/cs141/Documents/GitHub/CS141-Labs/lab2_alu/half_adder.v&quot; into library work</arg>
+</msg>
+
 </messages>
 
