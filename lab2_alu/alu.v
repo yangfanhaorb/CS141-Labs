@@ -38,19 +38,21 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 	assign nor_out = ~(X | Y);
 
 	//ADD
-	add_rca_32_bit OUTPUT_ADD (
+	adder_substractor OUTPUT_ADD (
 		.X(X),
 		.Y(Y),
+		.add_or_substract(op_code[0]),
 		.sum(add_out),
-		.overflow(add_overflow)
+		.overflow(overflow)
 	);
 
 	//SUB
-	sub_rca_32_bit OUTPUT_SUB (
+	adder_substractor OUTPUT_SUB (
 		.X(X),
 		.Y(Y),
-		.difference(sub_out),
-		.overflow(sub_overflow)
+		.add_or_substract(op_code[0]),
+		.diff(sub_out),
+		.overflow(overflow)
 	);
 	
 	//SRL

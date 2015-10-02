@@ -7,28 +7,21 @@
 // Author(s): Fanhao Yang, Thomas Esch
 //
 //////////////////////////////////////////////////////////////////////////////////
-module sub_func(X,Y,diff,overflow);
+module add_func(X,Y,sum,overflow);
 
 	//parameter definitions
 
 	//port definitions - customize for different bit widths
 	input  wire [31:0] X;
 	input  wire [31:0] Y;
-	output wire [31:0] dif;
+	output wire [31:0] sum;
 	output wire overflow;
 	
-	wire if_do = 0; //this here means we will invert, because this follows op_code[0] for substraction, which is 0
-	wire Y_prime;
-	
-	twos_complement inverter (
-    .X(Y), 
-	 .if_do(if_do),
-    .Y(Y_prime)
-    );
+	wire ci = 0;
 	
 	add_rca_32_bit adder (
     .X(X), 
-    .Y(Y_prime), 
+    .Y(Y), 
     .ci(ci), 
     .sum(sum), 
     .co(overflow)

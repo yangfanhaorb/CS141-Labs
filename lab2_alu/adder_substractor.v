@@ -3,26 +3,31 @@
 //////////////////////////////////////////////////////////////////////////////////
 // 
 // CS 141 - Fall 2015
-// Module Name:    add_func 
-// Author(s): Fanhao Yang, Thomas Esch
+// Module Name:    adder_substractor 
+// Author(s): 
+// Description: 
+//
 //
 //////////////////////////////////////////////////////////////////////////////////
-module sub_func(X,Y,diff,overflow);
+module adder_substractor(X,Y,add_or_substract,out,overflow);
 
 	//parameter definitions
 
 	//port definitions - customize for different bit widths
 	input  wire [31:0] X;
 	input  wire [31:0] Y;
-	output wire [31:0] dif;
+	input  wire add_or_substract;
+	output wire [31:0] out;
 	output wire overflow;
 	
-	wire if_do = 0; //this here means we will invert, because this follows op_code[0] for substraction, which is 0
-	wire Y_prime;
+	wire [31:0] Y_prime;
+	wire ci,co;
+	
+	assign ci = ~add_or_substract;
 	
 	twos_complement inverter (
     .X(Y), 
-	 .if_do(if_do),
+	 .if_do(add_or_substract),
     .Y(Y_prime)
     );
 	
@@ -30,11 +35,11 @@ module sub_func(X,Y,diff,overflow);
     .X(X), 
     .Y(Y_prime), 
     .ci(ci), 
-    .sum(sum), 
-    .co(overflow)
+    .sum(out), 
+    .co(co)
     );
-
-	
+	 
+	 assign overflow = ~(X[31]^Y_prime[31])&(out[31]^X[31]);
 	
 
 
