@@ -14,6 +14,11 @@ module test_alu;
 	reg [31:0] X;
 	reg [31:0] Y;
 	reg [3:0] op_code;
+	
+	//reg signed [31:0] X2;
+	//reg signed [31:0] Y2;
+	//assign X =X2;
+	//assign X =Y2;
 
 	// Outputs
 	wire [31:0] Z;
@@ -120,16 +125,49 @@ module test_alu;
 				end
 			
 			end
-			`ALU_OP_SLT: begin
-				if ((X < Y) && (Z !==32'd1) ) begin
-					$display("ERROR: SLT:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
-					error = error + 1;
-				end
-				if ((X > Y) && (Z !==32'd0) ) begin
-					$display("ERROR: SLT:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
-					error = error + 1;
-				end
 			
+			`ALU_OP_SLT: begin
+				if (Y[31]==1) begin//Y negatic
+					if (X[31] == 0) begin	//X positive
+						if (Z !==32'd0) begin	//X > Y
+						$display("ERROR: SLT1:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+						error = error + 1;
+						end
+					end
+					
+						
+					else if ((X < Y) && (Z !==32'd1) ) begin	// Yneg, Xneg
+						$display("ERROR: SLT2:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+						error = error + 1;
+					end
+					
+					else if ((X > Y) && (Z !==32'd0) ) begin	// Yneg, Xneg
+						$display("ERROR: SLT3:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+						error = error + 1;
+					end
+				end
+				
+				//Y positive
+				else if (X[31] == 0) begin	//X positive
+						if ((X < Y) && (Z !==32'd1) ) begin
+						$display("ERROR: SLT4:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+						error = error + 1;
+						end
+						
+						if ((X > Y) && (Z !==32'd0) ) begin
+						$display("ERROR: SLT5:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+						error = error + 1;
+						end
+				end
+				
+					
+				else begin//X negative
+					if (Z !==32'd1)  begin
+						$display("ERROR: SLT6:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+						error = error + 1;
+					end
+					
+				end
 			end
 			`ALU_OP_SRL: begin
 				if (Z !== (X >> Y) ) begin
@@ -147,7 +185,7 @@ module test_alu;
 			end
 			`ALU_OP_SRA: begin
 				if (Z !== (X >>> Y) ) begin
-					$display("ERROR: SLL:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
+					$display("ERROR: SRA:  op_code = %b, X = %h, Y = %h, Z = %h", op_code, X, Y, Z);
 					error = error + 1;
 				end
 			

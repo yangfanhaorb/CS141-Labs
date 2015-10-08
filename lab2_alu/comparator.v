@@ -9,16 +9,26 @@
 //
 //
 //////////////////////////////////////////////////////////////////////////////////
-module comparator(diff,slt,equal);
+module comparator(X,Y,diff,slt,equal);
 
 	//parameter definitions
 
 	//port definitions - customize for different bit widths
+	input  wire [31:0] X;
+	input  wire [31:0] Y;
 	input  wire [31:0] diff;
 	output wire [31:0] slt;
 	output wire equal;
 	
-	assign slt = diff[31];
+	wire negcompare;
+	wire negcompare2;
+	
+	assign negcompare = X[31]&~Y[31];
+	assign negcompare2 = ~(~X[31]&Y[31]);
+	
+	
+	assign slt = (negcompare | diff[31])&negcompare2;
+	//assign slt =diff[31]|negcompare;
 	assign equal = ~(|diff);
 
 endmodule

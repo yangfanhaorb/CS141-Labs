@@ -20,7 +20,8 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 	input  wire [3:0] op_code;
 	
 	output wire equal, overflow, zero;
-	wire overflow_placeholder;
+	wire overflow_placeholder, overflow_out;
+
 	
 	wire [31:0] and_out, or_out, xor_out, nor_out, add_or_sub_out, sub_out, slt_out, srl_out, sll_out, sra_out;
 
@@ -45,7 +46,7 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 		.Y(Y),
 		.add_or_substract(op_code[0]),
 		.out(add_or_sub_out),
-		.overflow(overflow)
+		.overflow(overflow_out)
 	);
 
 	//SUB JUST FOR SLT
@@ -60,6 +61,8 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
 	
 	//SLT
 	comparator OUTPUT_SLT (
+		.X(X),
+		.Y(Y),
 		.diff(sub_out),
 		.slt(slt_out),
 		.equal(equal)
@@ -101,6 +104,31 @@ module alu(X,Y,Z,op_code, equal, overflow, zero);
     .S(op_code), 
     .Z(Z)
     );
+	 
+	 
+	 //overflow mux
+	 pmux_16_to_1 #(.width(1)) overflow_MUX (
+    .in1(0), 
+    .in2(0), 
+    .in3(0), 
+    .in4(0), 
+    .in5(0), 
+    .in6(overflow_out), 
+    .in7(overflow_out), 
+    .in8(0), 
+    .in9(0), 
+    .in10(0), 
+    .in11(0), 
+    .in12(0), 
+    .in13(0), 
+    .in14(0), 
+    .in15(0), 
+    .in16(0), 
+    .S(op_code), 
+    .Z(overflow)
+    );
+	 
+	 
 	 
 	 assign zero  = &(~(Z|0));
 
