@@ -32,7 +32,6 @@ always @(posedge clk) begin
 end
 
 assign dout = rst ?  0 : (pwm_counter < din);
-
 /* >>>*/
 endmodule
 

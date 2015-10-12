@@ -1,80 +1,53 @@
 `timescale 1ns / 1ps
 
 ////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer:
-//
-// Create Date:   23:44:06 10/08/2015
-// Design Name:   pwm
-// Module Name:   C:/Users/cs141/Documents/GitHub/CS141-Labs/lab3-f15/test_pwm.v
-//
+// solutions for the pwm module: testbench
 ////////////////////////////////////////////////////////////////////////////////
 
 module test_pwm;
+	parameter DIV_COUNT = 2;
+	parameter N = 8;
 
 	// Inputs
 	reg clk;
 	reg rst;
-	reg [7:0] din;
+	reg [N-1:0] din;
+
 
 	// Outputs
 	wire dout;
 
-	always #5 clk = ~clk;
-
 	// Instantiate the Unit Under Test (UUT)
-	pwm uut (
+	
+	pwm #(.divider_count(DIV_COUNT), .N(N)) uut (
 		.clk(clk), 
 		.rst(rst), 
 		.din(din), 
 		.dout(dout)
 	);
 
-	initial begin
 	
+	always #5 clk = ~clk;
+	
+	integer i = 0;
+	initial begin
 		// Initialize Inputs
 		clk = 0;
 		rst = 1;
-		din = 30;
-
-		// Wait 100 ns for global reset to finish
-		//#100;
-        
-		// Add stimulus here
-		repeat (5) @(posedge clk);
-		rst = 0;
-		repeat (124) @(posedge clk);
-		rst = 1;
-		din = 100;
-		repeat (4) @(posedge clk);
-		rst = 0;
-		repeat (1024) @(posedge clk);
-		rst =1;
-		din = 200;
-		repeat (3) @(posedge clk);
-		rst = 0;
-		repeat (1024) @(posedge clk);
-		rst =1;
-		din = 35;
-		repeat (3) @(posedge clk);
-		rst = 0;
-		repeat (1024) @(posedge clk);
-		rst =1;
 		din = 0;
-		repeat (3) @(posedge clk);
+
+		repeat (2) @(posedge clk);
 		rst = 0;
-		repeat (1024) @(posedge clk);
-		rst =1;
-		din = 255;
-		repeat (3) @(posedge clk);
-		rst = 0;
-		repeat (1024) @(posedge clk);
-		rst =1;
 		
-		
+		for (i = 0; i < 256; i = i + 1) begin
+			din = i;
+			repeat (DIV_COUNT*(1 << N) + 1) @(posedge clk);
+		end
 
 		$finish;
 	end
+	
+
       
 endmodule
 
