@@ -13,6 +13,7 @@ module test_pwm;
 	reg rst;
 	reg [N-1:0] din;
 
+
 	// Outputs
 	wire dout;
 
@@ -24,6 +25,7 @@ module test_pwm;
 		.din(din), 
 		.dout(dout)
 	);
+
 	
 	always #5 clk = ~clk;
 	
@@ -45,6 +47,7 @@ module test_pwm;
 		$finish;
 	end
 	
+
       
 endmodule
 
