@@ -43,7 +43,7 @@ always @(posedge tft_clk) begin
 	end
 end
 
-assign tft_data_ena = (x<`TFT_X_RES)|(y<`TFT_Y_RES);
+assign tft_data_ena = (x<`TFT_X_RES)&(y<`TFT_Y_RES);
 assign new_frame = (y==0)&(x==0);
 /* >>> */
 endmodule

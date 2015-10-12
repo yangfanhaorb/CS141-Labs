@@ -32,8 +32,8 @@ module test_tft;
 
 	initial begin
 		//icarus verilog specific
-		$dumpfile("waves/test_tft.lxt");
-		$dumpvars(0, uut);
+		//$dumpfile("waves/test_tft.lxt");
+		//$dumpvars(0, uut);
 		
 		// Initialize Inputs
 		tft_clk = 0;
