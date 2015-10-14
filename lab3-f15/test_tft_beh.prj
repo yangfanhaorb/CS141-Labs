@@ -1,4 +1,0 @@
-verilog work "hdl/pwm.v"
-verilog work "hdl/tft_driver.v"
-verilog work "hdl/test_tft.v"
-verilog work "D:/Xilinx/14.7/ISE_DS/ISE//verilog/src/glbl.v"

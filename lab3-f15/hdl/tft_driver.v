@@ -26,8 +26,12 @@ always @(posedge tft_clk) begin
 	if(rst) begin
 		x <= 0;
 		y <= 0;
+		tft_display <= 0;
+		tft_vdd <= 0;
 	end
 	else begin
+		tft_display <= 1;
+		tft_vdd <= 1;
 		if(x < `TFT_X_RES + `TFT_X_BLANKING) begin
 			x <= x + 1;
 		end
@@ -45,6 +49,8 @@ end
 
 assign tft_data_ena = (x<`TFT_X_RES)&(y<`TFT_Y_RES);
 assign new_frame = (y==0)&(x==0);
+
+
 /* >>> */
 endmodule
 `default_nettype wire

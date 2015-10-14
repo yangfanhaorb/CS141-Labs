@@ -35,11 +35,21 @@ module graphics_unit(state,tft_x,tft_y,touch_x,touch_y,touch_valid,mem_rd_data,r
 			`DEMO_SINGLE_COLOR  : begin
 				/* insert your favorite color here */
 				red   = 8'h00;
-				green = 8'h00;
-				blue  = 8'hff;
+				green = 8'hff;
+				blue  = 8'h00;
 			end
 			`DEMO_STATIC_SQUARE : begin
 				/* insert your code here <<<*/
+				if ((tft_x > 247)&(tft_x < 277)&(tft_y > 129)&(tft_y < 159)) begin
+					red   = 8'hff;
+					green = 8'hff;
+					blue  = 8'hff;
+				end
+				else begin
+					red   = 8'h00;
+					green = 8'hff;
+					blue  = 8'h00;
+				end
 				
 				/* >>> */
 			end
