@@ -1,0 +1,4 @@
+verilog isim_temp "hdl/pwm.v"
+verilog isim_temp "hdl/tft_driver.v"
+verilog isim_temp "hdl/test_tft.v"
+verilog isim_temp "D:/Xilinx/14.7/ISE_DS/ISE//verilog/src/glbl.v"

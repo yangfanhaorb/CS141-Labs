@@ -5,6 +5,7 @@ module test_tft;
 	// Inputs
 	reg tft_clk;
 	reg rst;
+	reg [7:0] brightness;
 
 	// Outputs
 	wire tft_backlight;
@@ -14,6 +15,7 @@ module test_tft;
 	wire [9:0] x;
 	wire [8:0] y;
 	wire new_frame;
+	
 
 	// Instantiate the Unit Under Test (UUT)
 	tft_driver uut (
@@ -25,7 +27,8 @@ module test_tft;
 		.tft_clk(tft_clk), 
 		.x(x), 
 		.y(y), 
-		.new_frame(new_frame)
+		.new_frame(new_frame),
+		.brightness(brightness)
 	);
 	
 	always #4.5 tft_clk = ~tft_clk;
@@ -38,6 +41,7 @@ module test_tft;
 		// Initialize Inputs
 		tft_clk = 0;
 		rst = 1;
+		brightness = 100;
 		
 		// reset
 		rst = 1;
