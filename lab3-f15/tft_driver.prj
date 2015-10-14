@@ -1,0 +1,2 @@
+verilog work "hdl/pwm.v"
+verilog work "hdl/tft_driver.v"
