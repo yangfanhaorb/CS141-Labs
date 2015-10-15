@@ -112,7 +112,17 @@ touchpad_controller TOUCH(
 // assign frame_locked_touch_y = touch_y; //REPLACE THIS LINE TO ELIMINATE TEARING
 // assign frame_locked_touch_z = touch_z; //REPLACE THIS LINE TO ELIMINATE TEARING
 /*insert your code here <<< */
-
+always @(posedge tft_clk_buf) begin
+	if ((frame_locked_touch_x >= touch_x + 4)|(frame_locked_touch_x <= touch_x - 4)) begin // only change when the touch location is changing significantly
+		frame_locked_touch_x <= tft_new_frame ? touch_x : frame_locked_touch_x;
+	end
+	if ((frame_locked_touch_y >= touch_y + 4)|(frame_locked_touch_y <= touch_y - 4)) begin
+		frame_locked_touch_y <= tft_new_frame ? touch_y : frame_locked_touch_y;
+	end
+	if ((frame_locked_touch_z >= touch_z + 4)|(frame_locked_touch_z <= touch_z - 4)) begin
+		frame_locked_touch_z <= tft_new_frame ? touch_z : frame_locked_touch_z;
+	end
+end
 /*>>>*/
 
 wire vram_wr_ena;

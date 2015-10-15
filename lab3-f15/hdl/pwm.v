@@ -8,7 +8,7 @@ input wire [N-1:0] din;
 output wire dout;
 
 /* insert your code here <<<*/
-parameter divider_count = 2; // how high to count before pulsing
+parameter divider_count = 255; // how high to count before pulsing
 
 
 reg [$clog2(divider_count):0] divider_counter;

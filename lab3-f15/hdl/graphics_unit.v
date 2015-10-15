@@ -55,7 +55,16 @@ module graphics_unit(state,tft_x,tft_y,touch_x,touch_y,touch_valid,mem_rd_data,r
 			end
 			`DEMO_MOVING_SQUARE : begin
 				/* insert your code here <<< */
-				
+				if ((touch_valid==1)&(tft_x > (touch_x - 15))&(tft_x < (touch_x + 15))&(tft_y > (touch_y - 15))&(tft_y < (touch_y + 15))) begin
+					red   = 8'hff;
+					green = 8'hff;
+					blue  = 8'hff;
+				end
+				else begin
+					red   = 8'h00;
+					green = 8'hff;
+					blue  = 8'h00;
+				end
 				/* >>> */
 			end
 			`DEMO_ETCH_A_SKETCH : begin
