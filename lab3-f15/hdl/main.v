@@ -147,7 +147,7 @@ block_ram #(.LENGTH(480*272), .WIDTH(9)) VRAM (
 
 reg vram_clear;
 reg [16:0] vram_clear_counter; //you may want a counter in your clear FSM
-//assign vram_wr_addr = vram_clear ? 17'd0 : touch_addr; //you will need to modify this for your clear FSM
+
 assign vram_wr_addr = vram_clear ? vram_clear_counter : touch_addr; //todo: cut for stub
 
 always @(posedge cclk) begin
@@ -159,6 +159,13 @@ always @(posedge cclk) begin
 		if(vram_clear) begin
 			/*insert your code here <<<*/
 			/*>>>*/
+			if (vram_clear_counter < 131072) begin
+				vram_clear_counter <= vram_clear_counter + 1;
+			end
+			else begin
+				vram_clear_counter <= 0;
+				vram_clear <= 0;
+			end
 			//make sure to set vram_clear <= 0 when you are done clearing the memory
 		end
 		else begin
