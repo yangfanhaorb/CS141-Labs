@@ -8,3 +8,6 @@
 
 !*.v
 !*.prj
+!*.py
+!*.machine
+!*.asm
