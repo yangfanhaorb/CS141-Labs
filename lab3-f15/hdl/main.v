@@ -159,7 +159,7 @@ always @(posedge cclk) begin
 		if(vram_clear) begin
 			/*insert your code here <<<*/
 			/*>>>*/
-			if (vram_clear_counter < 131072) begin
+			if (vram_clear_counter < 130560) begin
 				vram_clear_counter <= vram_clear_counter + 1;
 			end
 			else begin
