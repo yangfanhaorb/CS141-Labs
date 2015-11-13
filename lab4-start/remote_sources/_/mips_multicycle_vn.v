@@ -89,9 +89,9 @@ always @(*) begin
 			next_state = `S_EXECUTE;
 		end
 		`S_EXECUTE : begin
-			next_state = `S_WRITEBACK;
+			next_state = `S_MEMORY;
 		end
-		`S_WRITEBACK : begin
+		`S_MEMORY : begin
 			next_state = `S_FETCH1;
 		end
 		
@@ -150,22 +150,22 @@ always @(posedge clk) begin
 						reg_rd_addr0 <= RS;
 						reg_rd_addr1 <= RT;
 					end
+					alu_src_a <= reg_rd_data0;
+					alu_src_b <= reg_rd_data1;
+					
+					alu_op <= ALU_OP_CODE;
 						
 			end
 			`S_EXECUTE: begin
 				/*control other registers here! */
-				alu_src_a <= reg_rd_data0;
-				alu_src_b <= reg_rd_data1;
-				
-				alu_op <= ALU_OP_CODE;
+				reg_wr_data <= alu_result;
+				reg_wr_addr <= RD;
+				reg_wr_ena <= 1;
 				
 			end
-			`S_WRITEBACK: begin
+			`S_MEMORY: begin
 				/*control other registers here! */
-				reg_wr_addr <= RD;
-				reg_wr_data <= alu_result;
-				
-				reg_wr_ena <= 1;
+				//??????
 			end
 			default: begin
 				/*always have a default case */
