@@ -61,7 +61,6 @@ output wire [32*32-1:0] full_register_file;
 
 // control signals
 
-wire [3:0] opcode;
 
 register_file #(.N(N)) REGISTER_FILE(
 	.clk(clk), .rst(rst), .wr_ena(reg_wr_ena),
@@ -90,9 +89,11 @@ always @(*) begin
 		end
 		`S_EXECUTE : begin
 			next_state = `S_MEMORY;
+			reg_wr_data = alu_last_result;
 		end
 		`S_MEMORY : begin
 			next_state = `S_FETCH1;
+			reg_wr_ena = 1;
 		end
 		
 		/* implement other comb. logic to determine the next state (or other comb. values) here! */  
@@ -113,18 +114,19 @@ always @(*) begin
 		reg_rd_addr1 = IR[20:16];
 	end
 	reg_wr_addr = IR[15:11]; //rd
-	//ALU DECODER
+	
+	//ALU CONTROL
 	case (IR[5:0])
-		`MIPS_FUNCT_AND: opcode = `ALU_OP_AND;
-		`MIPS_FUNCT_OR: opcode = `ALU_OP_OR;
-		`MIPS_FUNCT_XOR: opcode = `ALU_OP_XOR;
-		`MIPS_FUNCT_NOR: opcode = `ALU_OP_NOR;
-		`MIPS_FUNCT_SLL: opcode = `ALU_OP_SLL;
-		`MIPS_FUNCT_SRL: opcode = `ALU_OP_SRL;
-		`MIPS_FUNCT_SRA: opcode = `ALU_OP_SRA;
-		`MIPS_FUNCT_SLT: opcode = `ALU_OP_SLT;
-		`MIPS_FUNCT_ADD: opcode = `ALU_OP_ADD;
-		`MIPS_FUNCT_SUB: opcode = `ALU_OP_SUB;
+		`MIPS_FUNCT_AND: alu_op = `ALU_OP_AND;
+		`MIPS_FUNCT_OR: alu_op = `ALU_OP_OR;
+		`MIPS_FUNCT_XOR: alu_op = `ALU_OP_XOR;
+		`MIPS_FUNCT_NOR: alu_op = `ALU_OP_NOR;
+		`MIPS_FUNCT_SLL: alu_op = `ALU_OP_SLL;
+		`MIPS_FUNCT_SRL: alu_op = `ALU_OP_SRL;
+		`MIPS_FUNCT_SRA: alu_op = `ALU_OP_SRA;
+		`MIPS_FUNCT_SLT: alu_op = `ALU_OP_SLT;
+		`MIPS_FUNCT_ADD: alu_op = `ALU_OP_ADD;
+		`MIPS_FUNCT_SUB: alu_op = `ALU_OP_SUB;
 	endcase
 end
 
@@ -158,31 +160,15 @@ always @(posedge clk) begin
 			end
 			`S_DECODE: begin
 				/*control other registers here! */
-				IR_ena <= 0;
 				
-				
-				next_PC <= alu_result;
-				
-					// if shifting, load shamt into second 
-					if (shift) begin
-						reg_rd_addr0 <= RT;
-						reg_rd_addr1 <= SHAMT;
-					end
-					else begin
-						reg_rd_addr0 <= RS;
-						reg_rd_addr1 <= RT;
-					end
-					alu_src_a <= reg_rd_data0;
-					alu_src_b <= reg_rd_data1;
-					
-					alu_op <= ALU_OP_CODE;
+				reg_A <= reg_rd_data0;
+				reg_B <= reg_rd_data1;
 						
 			end
 			`S_EXECUTE: begin
 				/*control other registers here! */
-				reg_wr_data <= alu_result;
-				reg_wr_addr <= RD;
-				reg_wr_ena <= 1;
+				alu_last_result <= alu_result;
+				
 				
 			end
 			`S_MEMORY: begin
