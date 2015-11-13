@@ -1,0 +1,6 @@
+verilog work "remote_sources/_/register.v"
+verilog work "remote_sources/_/decoder.v"
+verilog work "remote_sources/_/register_file.v"
+verilog work "remote_sources/_/alu.v"
+verilog work "remote_sources/_/mips_multicycle_vn.v"
+verilog work "C:/Xilinx/14.7/ISE_DS/ISE//verilog/src/glbl.v"
