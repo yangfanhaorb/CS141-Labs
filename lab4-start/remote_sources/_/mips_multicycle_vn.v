@@ -42,6 +42,7 @@ reg [31:0] reg_A, reg_B; //register file read data registers
 reg [31:0] alu_last_result, exec_result; 
 reg [31:0] instruction_count; // for debugging
 reg [9:0] instruction_number;
+reg shift; // for logic with shifts
 
 
 /* the ALU */
@@ -58,10 +59,9 @@ reg [N-1:0] reg_wr_data;
 wire [N-1:0] reg_rd_data0, reg_rd_data1;
 output wire [32*32-1:0] full_register_file;
 
-// Decoder wires
+// control signals
 
-wire [4:0] RS, RT, RD, SHAMT;
-wire [5:0] OPCODE, FUNCT;
+wire [3:0] opcode;
 
 register_file #(.N(N)) REGISTER_FILE(
 	.clk(clk), .rst(rst), .wr_ena(reg_wr_ena),
@@ -89,9 +89,9 @@ always @(*) begin
 			
 		end
 		`S_EXECUTE : begin
-			next_state = `S_WRITEBACK;
+			next_state = `S_MEMORY;
 		end
-		`S_WRITEBACK : begin
+		`S_MEMORY : begin
 			next_state = `S_FETCH1;
 		end
 		
@@ -102,12 +102,31 @@ always @(*) begin
 	endcase
 end
 
-always @(*) begin
-	//DECODER
-	reg_rd_addr0 = IR[25:21];
-	reg_rd_addr1 = IR[20:16];
-end
 
+always @(*) begin
+	//REGISTER DECODER
+	reg_rd_addr0 = IR[25:21]; //rs
+	if (IR[10:6]!=5'b00000) begin //rt or shamt
+		reg_rd_addr1 = IR[10:6]; 
+	end
+	else begin
+		reg_rd_addr1 = IR[20:16];
+	end
+	reg_wr_addr = IR[15:11]; //rd
+	//ALU DECODER
+	case (IR[5:0])
+		`MIPS_FUNCT_AND: opcode = `ALU_OP_AND;
+		`MIPS_FUNCT_OR: opcode = `ALU_OP_OR;
+		`MIPS_FUNCT_XOR: opcode = `ALU_OP_XOR;
+		`MIPS_FUNCT_NOR: opcode = `ALU_OP_NOR;
+		`MIPS_FUNCT_SLL: opcode = `ALU_OP_SLL;
+		`MIPS_FUNCT_SRL: opcode = `ALU_OP_SRL;
+		`MIPS_FUNCT_SRA: opcode = `ALU_OP_SRA;
+		`MIPS_FUNCT_SLT: opcode = `ALU_OP_SLT;
+		`MIPS_FUNCT_ADD: opcode = `ALU_OP_ADD;
+		`MIPS_FUNCT_SUB: opcode = `ALU_OP_SUB;
+	endcase
+end
 
 
 
@@ -145,22 +164,22 @@ always @(posedge clk) begin
 						reg_rd_addr0 <= RS;
 						reg_rd_addr1 <= RT;
 					end
+					alu_src_a <= reg_rd_data0;
+					alu_src_b <= reg_rd_data1;
+					
+					alu_op <= ALU_OP_CODE;
 						
 			end
 			`S_EXECUTE: begin
 				/*control other registers here! */
-				alu_src_a <= reg_rd_data0;
-				alu_src_b <= reg_rd_data1;
-				
-				alu_op <= ALU_OP_CODE;
+				reg_wr_data <= alu_result;
+				reg_wr_addr <= RD;
+				reg_wr_ena <= 1;
 				
 			end
-			`S_WRITEBACK: begin
+			`S_MEMORY: begin
 				/*control other registers here! */
-				reg_wr_addr <= RD;
-				reg_wr_data <= alu_result;
-				
-				reg_wr_ena <= 1;
+				//??????
 			end
 			default: begin
 				/*always have a default case */
