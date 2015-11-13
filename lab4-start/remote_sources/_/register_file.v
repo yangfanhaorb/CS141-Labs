@@ -132,7 +132,6 @@ end
 output wire [32*32-1:0] full_register_file;
 assign full_register_file = {r31,r30,r29,r28,r27,r26,r25,r24,r23,r22,r21,r20,r19,r18,r17,r16,r15,r14,r13,r12,r11,r10,r09,r08,r07,r06,r05,r04,r03,r02,r01,r00};
 
->>>>>>> e60537c8da8be607140d191d012c18552d221321
 task print_hex;
 begin
 	//print "\t" + "\n\t".join(["$display(\"r%02d::%8s::%%h\",r%02d);"%(i,x,i) for i,x in enumerate(register_names)]) #generator code (python)

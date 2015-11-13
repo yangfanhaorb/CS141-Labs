@@ -110,7 +110,6 @@ always @(posedge clk) begin
 			default: begin
 				/*always have a default case */
 				next_state = `S_FAILURE;
->>>>>>> e60537c8da8be607140d191d012c18552d221321
 			end
 		endcase
 	end
