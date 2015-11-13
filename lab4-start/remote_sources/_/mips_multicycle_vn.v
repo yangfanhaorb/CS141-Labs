@@ -61,6 +61,9 @@ output wire [32*32-1:0] full_register_file;
 
 // control signals
 
+// IR decode
+wire [4:0] rs, rt, rd;
+wire [5:0] shamt;
 
 register_file #(.N(N)) REGISTER_FILE(
 	.clk(clk), .rst(rst), .wr_ena(reg_wr_ena),
@@ -95,8 +98,15 @@ always @(*) begin
 		end
 		`S_EXECUTE : begin
 			next_state = `S_MEMORY;
-			alu_src_a = reg_A;
-			alu_src_b = reg_B;
+			
+			if ((IR[5:0]==`MIPS_FUNCT_SLL) | (IR[5:0]==`MIPS_FUNCT_SRL) | (IR[5:0]==`MIPS_FUNCT_SRA)) begin
+				alu_src_a = reg_B;
+				alu_src_b = IR[10:6];
+			end
+			else begin
+				alu_src_a = reg_A;
+				alu_src_b = reg_B;
+			end
 			
 		end
 		`S_MEMORY : begin
@@ -111,16 +121,22 @@ always @(*) begin
 	endcase
 end
 
+	assign rs = IR[25:21];
+	assign rt = IR[20:16];
+	assign rd = IR[15:11];
+	assign shamt = IR[10:6];
 
 always @(*) begin
 	//REGISTER DECODER
+	
+	
 	reg_rd_addr0 = IR[25:21]; //rs
-	if (IR[31:25]==`MIPS_FUNCT_SLL | IR[31:25]==`MIPS_FUNCT_SRL | IR[31:25]==`MIPS_FUNCT_SRA) begin //rt or shamt
-		reg_rd_addr1 = IR[10:6]; 
-	end
-	else begin
-		reg_rd_addr1 = IR[20:16];
-	end
+	//if (IR[31:25]==`MIPS_FUNCT_SLL | IR[31:25]==`MIPS_FUNCT_SRL | IR[31:25]==`MIPS_FUNCT_SRA) begin //rt or shamt
+	reg_rd_addr1 = IR[20:16]; //rt
+	//end
+	//else begin
+	//	reg_rd_addr1 = IR[20:16];
+	//end
 	reg_wr_addr = IR[15:11]; //rd
 	reg_wr_data = alu_last_result;
 	
