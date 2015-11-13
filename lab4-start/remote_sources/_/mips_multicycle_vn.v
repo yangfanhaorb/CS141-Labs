@@ -81,7 +81,7 @@ always @(*) begin
 			next_state = `S_FETCH2;
 			alu_src_a = next_PC;
 			alu_src_b = 32'd4;
-			alu_op = `ALU_OP_AND;
+			alu_op = `ALU_OP_ADD;
 		end
 		`S_FETCH2 : begin
 			next_state = `S_DECODE;
@@ -92,8 +92,8 @@ always @(*) begin
 		end
 		`S_EXECUTE : begin
 			next_state = `S_MEMORY;
-			alu_src_a = A;
-			alu_src_b = B;
+			alu_src_a = reg_A;
+			alu_src_b = reg_B;
 			reg_wr_data = alu_last_result;
 		end
 		`S_MEMORY : begin
@@ -151,13 +151,14 @@ always @(posedge clk) begin
 				/*control other registers here! */
 				reg_wr_ena <= 0;
 				mem_rd_addr <= next_PC;
+				last_PC <= next_PC;
 				
 				
 			end
 			`S_FETCH2: begin
 				/*control other registers here! */
 				IR <= mem_rd_data;
-				last_PC <= next_PC;
+				next_PC <= alu_result;
 				
 			end
 			`S_DECODE: begin
