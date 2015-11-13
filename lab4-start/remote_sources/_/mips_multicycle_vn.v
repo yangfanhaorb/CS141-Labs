@@ -86,6 +86,7 @@ always @(*) begin
 		end
 		`S_DECODE : begin
 			next_state = `S_EXECUTE;
+			
 		end
 		`S_EXECUTE : begin
 			next_state = `S_WRITEBACK;
@@ -102,11 +103,13 @@ always @(*) begin
 end
 
 always @(*) begin
-	
+	//DECODER
+	reg_rd_addr0 = IR[25:21];
+	reg_rd_addr1 = IR[20:16];
 end
 
-//DECODER
-assign;
+
+
 
 
 always @(posedge clk) begin
@@ -126,7 +129,6 @@ always @(posedge clk) begin
 			end
 			`S_FETCH2: begin
 				/*control other registers here! */
-				IR_ena <= 1;
 				IR <= mem_rd_data;
 				
 			end

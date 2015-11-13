@@ -1,0 +1,3 @@
+verilog work "remote_sources/_/register.v"
+verilog work "remote_sources/_/decoder.v"
+verilog work "remote_sources/_/register_file.v"
