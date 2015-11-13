@@ -43,7 +43,7 @@ initial begin
 		  - try to attempt to load data into r00! - that should result in no change on the output (because that needs to be zero all the time!)
 		-read out what was loaded in, confirm that it looks right
 	*/
-	
+
 	for (i = 0; i < 32; i = i + 1) begin
 		@(negedge clk);
 		wr_ena = 1;

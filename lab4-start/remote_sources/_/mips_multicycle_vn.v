@@ -95,9 +95,22 @@ always @(posedge clk) begin
 		case (state) 
 			`S_FETCH1: begin
 				/*control other registers here! */
+				mem_rd_addr <= next_PC;
+			end
+			`S_FETCH2: begin
+				/*control other registers here! */
+				IR_ena <= 1;
+				IR <= mem_rd_data;
+			end
+			`S_DECODE_AND_FILL: begin
+				/*control other registers here! */
+				IR_ena <= 0;
+				;
 			end
 			default: begin
 				/*always have a default case */
+				next_state = `S_FAILURE;
+>>>>>>> e60537c8da8be607140d191d012c18552d221321
 			end
 		endcase
 	end
