@@ -147,8 +147,8 @@ always @(posedge clk) begin
 				mem_rd_addr <= next_PC;
 				
 				alu_src_a <= next_PC;
-				alu_src_b <= FOUR;
-				alu_op <= ADD;
+				alu_src_b <= 32'd4;
+				alu_op <= `ALU_OP_AND;
 				
 			end
 			`S_FETCH2: begin
