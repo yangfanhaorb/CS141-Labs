@@ -142,18 +142,26 @@ always @(posedge clk) begin
 			`S_FETCH1: begin
 				/*control other registers here! */
 				reg_wr_ena <= 0;
-				
 				mem_rd_addr <= next_PC;
+				
+				alu_src_a <= next_PC;
+				alu_src_b <= FOUR;
+				alu_op <= ADD;
 				
 			end
 			`S_FETCH2: begin
 				/*control other registers here! */
 				IR <= mem_rd_data;
 				
+				last_PC <= next_PC;
+				
 			end
 			`S_DECODE: begin
 				/*control other registers here! */
 				IR_ena <= 0;
+				
+				
+				next_PC <= alu_result;
 				
 					// if shifting, load shamt into second 
 					if (shift) begin
