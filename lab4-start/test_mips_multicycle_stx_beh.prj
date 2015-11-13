@@ -1,0 +1,8 @@
+verilog isim_temp "remote_sources/_/register.v"
+verilog isim_temp "remote_sources/_/decoder.v"
+verilog isim_temp "remote_sources/_/register_file.v"
+verilog isim_temp "remote_sources/_/alu.v"
+verilog isim_temp "remote_sources/_/synth_dual_port_memory.v"
+verilog isim_temp "remote_sources/_/mips_multicycle_vn.v"
+verilog isim_temp "remote_sources/_/test_mips_multicycle.v"
+verilog isim_temp "C:/Xilinx/14.7/ISE_DS/ISE//verilog/src/glbl.v"

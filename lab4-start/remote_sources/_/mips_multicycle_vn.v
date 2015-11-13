@@ -82,6 +82,9 @@ always @(*) begin
 			alu_src_a = next_PC;
 			alu_src_b = 32'd4;
 			alu_op = `ALU_OP_ADD;
+			mem_rd_addr = next_PC;
+			mem_wr_ena =0;
+			reg_wr_ena = 0;
 		end
 		`S_FETCH2 : begin
 			next_state = `S_DECODE;
@@ -94,10 +97,11 @@ always @(*) begin
 			next_state = `S_MEMORY;
 			alu_src_a = reg_A;
 			alu_src_b = reg_B;
-			reg_wr_data = alu_last_result;
+			
 		end
 		`S_MEMORY : begin
 			next_state = `S_FETCH1;
+			reg_wr_ena = 1;
 		end
 		
 		/* implement other comb. logic to determine the next state (or other comb. values) here! */  
@@ -118,6 +122,7 @@ always @(*) begin
 		reg_rd_addr1 = IR[20:16];
 	end
 	reg_wr_addr = IR[15:11]; //rd
+	reg_wr_data = alu_last_result;
 	
 	//ALU CONTROL
 	if (state==`S_EXECUTE) begin
@@ -134,6 +139,14 @@ always @(*) begin
 			`MIPS_FUNCT_SUB: alu_op = `ALU_OP_SUB;
 		endcase
 	end
+	
+	//MEM CONTROL
+	if (mem_wr_ena==0) begin
+		mem_addr = mem_rd_addr;
+	end
+	else begin
+		mem_addr = mem_wr_addr;
+	end
 end
 
 
@@ -142,6 +155,7 @@ end
 always @(posedge clk) begin
 	if(rst) begin
 		state <= `S_FETCH1;
+		next_PC <= 32'h00400000;
 		/* be sure to reset all registers to sane values here! */
 	end
 	else begin
@@ -149,9 +163,9 @@ always @(posedge clk) begin
 		case (state) 
 			`S_FETCH1: begin
 				/*control other registers here! */
-				reg_wr_ena <= 0;
-				mem_rd_addr <= next_PC;
+				
 				last_PC <= next_PC;
+				
 				
 				
 			end
@@ -177,7 +191,7 @@ always @(posedge clk) begin
 			end
 			`S_MEMORY: begin
 				/*control other registers here! */
-				reg_wr_ena <= 1;
+				
 			end
 			default: begin
 				/*always have a default case */
