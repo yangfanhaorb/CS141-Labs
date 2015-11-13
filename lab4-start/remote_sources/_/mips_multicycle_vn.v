@@ -42,6 +42,7 @@ reg [31:0] reg_A, reg_B; //register file read data registers
 reg [31:0] alu_last_result, exec_result; 
 reg [31:0] instruction_count; // for debugging
 reg [9:0] instruction_number;
+reg shift; // for logic with shifts
 
 
 /* the ALU */
@@ -101,12 +102,18 @@ always @(*) begin
 	endcase
 end
 
-always @(*) begin
+//always @(*) begin
 	
-end
+//end
 
 //DECODER
-assign;
+assign OPCODE = IR[31:26];
+assign RS = IR[25:21];
+assign RT = IR[20:16];
+assign RD = IR[15:11];
+assign SHAMT = IR[10:6];
+assign FUNCT = IR[5:0];
+
 
 
 always @(posedge clk) begin
