@@ -79,6 +79,9 @@ always @(*) begin
 	case (state) 
 		`S_FETCH1 : begin
 			next_state = `S_FETCH2;
+			alu_src_a = next_PC;
+			alu_src_b = 32'd4;
+			alu_op = `ALU_OP_AND;
 		end
 		`S_FETCH2 : begin
 			next_state = `S_DECODE;
@@ -89,11 +92,12 @@ always @(*) begin
 		end
 		`S_EXECUTE : begin
 			next_state = `S_MEMORY;
+			alu_src_a = A;
+			alu_src_b = B;
 			reg_wr_data = alu_last_result;
 		end
 		`S_MEMORY : begin
 			next_state = `S_FETCH1;
-			reg_wr_ena = 1;
 		end
 		
 		/* implement other comb. logic to determine the next state (or other comb. values) here! */  
@@ -107,7 +111,7 @@ end
 always @(*) begin
 	//REGISTER DECODER
 	reg_rd_addr0 = IR[25:21]; //rs
-	if (IR[10:6]!=5'b00000) begin //rt or shamt
+	if (IR[31:25]==`MIPS_FUNCT_SLL | IR[31:25]==`MIPS_FUNCT_SRL | IR[31:25]==`MIPS_FUNCT_SRA) begin //rt or shamt
 		reg_rd_addr1 = IR[10:6]; 
 	end
 	else begin
@@ -116,18 +120,20 @@ always @(*) begin
 	reg_wr_addr = IR[15:11]; //rd
 	
 	//ALU CONTROL
-	case (IR[5:0])
-		`MIPS_FUNCT_AND: alu_op = `ALU_OP_AND;
-		`MIPS_FUNCT_OR: alu_op = `ALU_OP_OR;
-		`MIPS_FUNCT_XOR: alu_op = `ALU_OP_XOR;
-		`MIPS_FUNCT_NOR: alu_op = `ALU_OP_NOR;
-		`MIPS_FUNCT_SLL: alu_op = `ALU_OP_SLL;
-		`MIPS_FUNCT_SRL: alu_op = `ALU_OP_SRL;
-		`MIPS_FUNCT_SRA: alu_op = `ALU_OP_SRA;
-		`MIPS_FUNCT_SLT: alu_op = `ALU_OP_SLT;
-		`MIPS_FUNCT_ADD: alu_op = `ALU_OP_ADD;
-		`MIPS_FUNCT_SUB: alu_op = `ALU_OP_SUB;
-	endcase
+	if (state==`S_EXECUTE) begin
+		case (IR[5:0])
+			`MIPS_FUNCT_AND: alu_op = `ALU_OP_AND;
+			`MIPS_FUNCT_OR: alu_op = `ALU_OP_OR;
+			`MIPS_FUNCT_XOR: alu_op = `ALU_OP_XOR;
+			`MIPS_FUNCT_NOR: alu_op = `ALU_OP_NOR;
+			`MIPS_FUNCT_SLL: alu_op = `ALU_OP_SLL;
+			`MIPS_FUNCT_SRL: alu_op = `ALU_OP_SRL;
+			`MIPS_FUNCT_SRA: alu_op = `ALU_OP_SRA;
+			`MIPS_FUNCT_SLT: alu_op = `ALU_OP_SLT;
+			`MIPS_FUNCT_ADD: alu_op = `ALU_OP_ADD;
+			`MIPS_FUNCT_SUB: alu_op = `ALU_OP_SUB;
+		endcase
+	end
 end
 
 
@@ -146,15 +152,11 @@ always @(posedge clk) begin
 				reg_wr_ena <= 0;
 				mem_rd_addr <= next_PC;
 				
-				alu_src_a <= next_PC;
-				alu_src_b <= 32'd4;
-				alu_op <= `ALU_OP_AND;
 				
 			end
 			`S_FETCH2: begin
 				/*control other registers here! */
 				IR <= mem_rd_data;
-				
 				last_PC <= next_PC;
 				
 			end
@@ -163,6 +165,7 @@ always @(posedge clk) begin
 				
 				reg_A <= reg_rd_data0;
 				reg_B <= reg_rd_data1;
+				
 						
 			end
 			`S_EXECUTE: begin
@@ -173,7 +176,7 @@ always @(posedge clk) begin
 			end
 			`S_MEMORY: begin
 				/*control other registers here! */
-				//??????
+				reg_wr_ena <= 1;
 			end
 			default: begin
 				/*always have a default case */
