@@ -58,6 +58,11 @@ reg [N-1:0] reg_wr_data;
 wire [N-1:0] reg_rd_data0, reg_rd_data1;
 output wire [32*32-1:0] full_register_file;
 
+// Decoder wires
+
+wire [4:0] RS, RT, RD, SHAMT;
+wire [5:0] OPCODE, FUNCT;
+
 register_file #(.N(N)) REGISTER_FILE(
 	.clk(clk), .rst(rst), .wr_ena(reg_wr_ena),
 	.rd_addr0(reg_rd_addr0), .rd_addr1(reg_rd_addr1),
@@ -70,20 +75,39 @@ register_file #(.N(N)) REGISTER_FILE(
 /* hint: use always @(*) to do comb. logic based on the state and other registers, then have an always @(posedge clk) sequential block to drive all of the registers (architectural and non-architectural) */
 
 /* here's an example structure to get you started... */
+
 always @(*) begin
 	case (state) 
 		`S_FETCH1 : begin
 			next_state = `S_FETCH2;
 		end
-		`S_FETCH1 : begin
+		`S_FETCH2 : begin
+			next_state = `S_DECODE;
+		end
+		`S_DECODE : begin
 			next_state = `S_EXECUTE;
 		end
-		/* implement other comb. logic to determine the next state (or other comb. values) here! */
+		`S_EXECUTE : begin
+			next_state = `S_WRITEBACK;
+		end
+		`S_WRITEBACK : begin
+			next_state = `S_FETCH1;
+		end
+		
+		/* implement other comb. logic to determine the next state (or other comb. values) here! */  
 		default: begin
 			next_state = `S_FAILURE; //this helps us catch issues with our state machine
 		end
 	endcase
 end
+
+always @(*) begin
+	
+end
+
+//DECODER
+assign;
+
 
 always @(posedge clk) begin
 	if(rst) begin
@@ -99,16 +123,14 @@ always @(posedge clk) begin
 				
 				mem_rd_addr <= next_PC;
 				
-				next_state =`S_FETCH2;
 			end
 			`S_FETCH2: begin
 				/*control other registers here! */
 				IR_ena <= 1;
 				IR <= mem_rd_data;
 				
-				next_state = `S_DECODE_AND_FILL;
 			end
-			`S_DECODE_AND_FILL: begin
+			`S_DECODE: begin
 				/*control other registers here! */
 				IR_ena <= 0;
 				
@@ -121,26 +143,22 @@ always @(posedge clk) begin
 						reg_rd_addr0 <= RS;
 						reg_rd_addr1 <= RT;
 					end
-				
-				
-				next_state = `S_ALU_OP;		
+						
 			end
-			`S_ALU_OP: begin
+			`S_EXECUTE: begin
 				/*control other registers here! */
 				alu_src_a <= reg_rd_data0;
 				alu_src_b <= reg_rd_data1;
 				
 				alu_op <= ALU_OP_CODE;
 				
-				next_state =`S_WRITE_BACK;
 			end
-			`S_WRITE_BACK: begin
+			`S_WRITEBACK: begin
 				/*control other registers here! */
-				reg_wr_addr <= alu_result;
+				reg_wr_addr <= RD;
+				reg_wr_data <= alu_result;
 				
 				reg_wr_ena <= 1;
-				
-				next_state =`S_FETCH1;
 			end
 			default: begin
 				/*always have a default case */
