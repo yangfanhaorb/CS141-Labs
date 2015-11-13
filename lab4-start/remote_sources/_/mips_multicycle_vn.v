@@ -95,17 +95,52 @@ always @(posedge clk) begin
 		case (state) 
 			`S_FETCH1: begin
 				/*control other registers here! */
+				reg_wr_ena <= 0;
+				
 				mem_rd_addr <= next_PC;
+				
+				next_state =`S_FETCH2;
 			end
 			`S_FETCH2: begin
 				/*control other registers here! */
 				IR_ena <= 1;
 				IR <= mem_rd_data;
+				
+				next_state = `S_DECODE_AND_FILL;
 			end
 			`S_DECODE_AND_FILL: begin
 				/*control other registers here! */
 				IR_ena <= 0;
-				;
+				
+					// if shifting, load shamt into second 
+					if (shift) begin
+						reg_rd_addr0 <= RT;
+						reg_rd_addr1 <= SHAMT;
+					end
+					else begin
+						reg_rd_addr0 <= RS;
+						reg_rd_addr1 <= RT;
+					end
+				
+				
+				next_state = `S_ALU_OP;		
+			end
+			`S_ALU_OP: begin
+				/*control other registers here! */
+				alu_src_a <= reg_rd_data0;
+				alu_src_b <= reg_rd_data1;
+				
+				alu_op <= ALU_OP_CODE;
+				
+				next_state =`S_WRITE_BACK;
+			end
+			`S_WRITE_BACK: begin
+				/*control other registers here! */
+				reg_wr_addr <= alu_result;
+				
+				reg_wr_ena <= 1;
+				
+				next_state =`S_FETCH1;
 			end
 			default: begin
 				/*always have a default case */
