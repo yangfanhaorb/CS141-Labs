@@ -124,8 +124,10 @@ always @(*) begin
 			
 		end
 		`S_MEMORY : begin
-			next_state = `S_FETCH1;
-			
+			case (IR[31:26])
+				`MIPS_OP_LW: next_state = `S_WRITEBACK;
+				default: next_state = `S_FETCH1;
+			endcase
 
 			case (IR[31:26])
 				`MIPS_OP_SW: begin
@@ -134,9 +136,7 @@ always @(*) begin
 					mem_wr_ena =1;
 				end
 				`MIPS_OP_LW: begin
-					reg_wr_addr = alu_result;
-					reg_wr_data = DR;
-					reg_wr_ena = 1;
+					reg_wr_ena = 0;
 				end
 				default: begin
 					reg_wr_ena = 1;
@@ -144,6 +144,12 @@ always @(*) begin
 			endcase
 				
 			
+		end
+		
+		`S_WRITEBACK: begin
+			next_state = `S_FETCH1;
+			reg_wr_data = DR;
+			reg_wr_ena = 1;
 		end
 		
 		/* implement other comb. logic to determine the next state (or other comb. values) here! */  
@@ -164,16 +170,22 @@ always @(*) begin
 	
 	reg_rd_addr0 = IR[25:21]; //rs
 	reg_rd_addr1 = IR[20:16]; //rt
-	case (op_code_type)
-		`OP_CODE_TYPE_R: begin
-			reg_wr_addr = IR[15:11]; //rd
-		end
-		`OP_CODE_TYPE_I: begin
-			reg_wr_addr = IR[20:16]; //rd
-		end
-	endcase
+	if (state==`S_WRITEBACK) begin
+		reg_wr_addr = IR[20:16]; //rt
+	end
+	else begin
+		case (op_code_type)
+			`OP_CODE_TYPE_R: begin
+				reg_wr_addr = IR[15:11]; //rd
+			end
+			`OP_CODE_TYPE_I: begin
+				reg_wr_addr = IR[20:16]; //rt
+			end
+		endcase
+		reg_wr_data = alu_last_result;
+	end
 	
-	reg_wr_data = alu_last_result;
+	
 	immi = IR[15:0]; //immi
 	if (immi[15]==0) begin
 		sign_extended_immi = 32'h00000000 | immi;
@@ -207,6 +219,8 @@ always @(*) begin
 					`MIPS_OP_XORI: alu_op = `ALU_OP_XOR;
 					`MIPS_OP_SLTI: alu_op = `ALU_OP_SLT;
 					`MIPS_OP_ADDI: alu_op = `ALU_OP_ADD;
+					`MIPS_OP_LW: alu_op = `ALU_OP_ADD;
+					`MIPS_OP_SW: alu_op = `ALU_OP_ADD;
 				endcase
 			end
 		endcase 
@@ -278,6 +292,13 @@ always @(posedge clk) begin
 				DR <= mem_rd_data;
 				
 			end
+			
+			`S_WRITEBACK: begin
+				
+				
+			
+			end
+			
 			default: begin
 				/*always have a default case */
 				next_state = `S_FAILURE;
