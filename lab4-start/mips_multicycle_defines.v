@@ -31,5 +31,11 @@
 `define ALU_SRC_B_SW_4			3'd4 //the number four (for PC + 4)
 `define ALU_SRC_B_SW_16			3'd5 //the number 16   (for LUI...and that's about it)
 
+//switch codes for op code types
+`define OP_CODE_TYPE_WIDTH    2
+`define OP_CODE_TYPE_R        2'd0
+`define OP_CODE_TYPE_I        2'd1
+`define OP_CODE_TYPE_BRANCH   2'd2
+
 `endif
 

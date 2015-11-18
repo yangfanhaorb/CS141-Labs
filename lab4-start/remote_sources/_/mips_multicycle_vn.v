@@ -60,10 +60,13 @@ wire [N-1:0] reg_rd_data0, reg_rd_data1;
 output wire [32*32-1:0] full_register_file;
 
 // control signals
+reg [1:0] op_code_type; 
 
 // IR decode
 wire [4:0] rs, rt, rd;
 wire [5:0] shamt;
+reg [15:0] immi;
+reg [31:0] sign_extended_immi;
 
 register_file #(.N(N)) REGISTER_FILE(
 	.clk(clk), .rst(rst), .wr_ena(reg_wr_ena),
@@ -99,14 +102,24 @@ always @(*) begin
 		`S_EXECUTE : begin
 			next_state = `S_MEMORY;
 			
-			if ((IR[5:0]==`MIPS_FUNCT_SLL) | (IR[5:0]==`MIPS_FUNCT_SRL) | (IR[5:0]==`MIPS_FUNCT_SRA)) begin
-				alu_src_a = reg_B;
-				alu_src_b = IR[10:6];
-			end
-			else begin
-				alu_src_a = reg_A;
-				alu_src_b = reg_B;
-			end
+			// alu src control
+			case (op_code_type)
+				`OP_CODE_TYPE_R: begin 
+					// alu src mux for shift
+					if ((IR[5:0]==`MIPS_FUNCT_SLL) | (IR[5:0]==`MIPS_FUNCT_SRL) | (IR[5:0]==`MIPS_FUNCT_SRA)) begin
+						alu_src_a = reg_B;
+						alu_src_b = IR[10:6];
+					end
+					else begin
+						alu_src_a = reg_A;
+						alu_src_b = reg_B;
+					end
+				end
+				`OP_CODE_TYPE_I: begin
+					alu_src_a = reg_A;
+					alu_src_b = sign_extended_immi;
+				end
+			endcase
 			
 		end
 		`S_MEMORY : begin
@@ -131,14 +144,17 @@ always @(*) begin
 	
 	
 	reg_rd_addr0 = IR[25:21]; //rs
-	//if (IR[31:25]==`MIPS_FUNCT_SLL | IR[31:25]==`MIPS_FUNCT_SRL | IR[31:25]==`MIPS_FUNCT_SRA) begin //rt or shamt
 	reg_rd_addr1 = IR[20:16]; //rt
-	//end
-	//else begin
-	//	reg_rd_addr1 = IR[20:16];
-	//end
 	reg_wr_addr = IR[15:11]; //rd
 	reg_wr_data = alu_last_result;
+	immi = IR[15:0]; //immi
+	if (immi[15]==0) begin
+		sign_extended_immi = 32'h00000000 | immi;
+	end
+	else begin
+		sign_extended_immi = 32'h11110000 | immi;
+	end
+	
 	
 	//ALU CONTROL
 	if (state==`S_EXECUTE) begin
@@ -155,6 +171,16 @@ always @(*) begin
 			`MIPS_FUNCT_SUB: alu_op = `ALU_OP_SUB;
 		endcase
 	end
+	
+	//OP CODE TYPE CONTROL
+	case (IR[31:26])
+		`MIPS_OP_RTYPE: op_code_type = `OP_CODE_TYPE_R;
+		`MIPS_OP_ANDI: op_code_type = `OP_CODE_TYPE_I;
+		`MIPS_OP_ORI: op_code_type = `OP_CODE_TYPE_I;
+		`MIPS_OP_XORI: op_code_type = `OP_CODE_TYPE_I;
+		`MIPS_OP_SLTI: op_code_type = `OP_CODE_TYPE_I;
+		`MIPS_OP_ADDI: op_code_type = `OP_CODE_TYPE_I;
+	endcase
 	
 	//MEM CONTROL
 	if (mem_wr_ena==0) begin
