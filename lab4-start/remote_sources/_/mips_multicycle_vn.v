@@ -118,13 +118,32 @@ always @(*) begin
 				`OP_CODE_TYPE_I: begin
 					alu_src_a = reg_A;
 					alu_src_b = sign_extended_immi;
+					mem_rd_addr = alu_result;
 				end
 			endcase
 			
 		end
 		`S_MEMORY : begin
 			next_state = `S_FETCH1;
-			reg_wr_ena = 1;
+			
+
+			case (IR[31:26])
+				`MIPS_OP_SW: begin
+					mem_wr_addr = alu_result;
+					mem_wr_data = reg_B;
+					mem_wr_ena =1;
+				end
+				`MIPS_OP_LW: begin
+					reg_wr_addr = alu_result;
+					reg_wr_data = DR;
+					reg_wr_ena = 1;
+				end
+				default: begin
+					reg_wr_ena = 1;
+				end
+			endcase
+				
+			
 		end
 		
 		/* implement other comb. logic to determine the next state (or other comb. values) here! */  
@@ -180,6 +199,8 @@ always @(*) begin
 		`MIPS_OP_XORI: op_code_type = `OP_CODE_TYPE_I;
 		`MIPS_OP_SLTI: op_code_type = `OP_CODE_TYPE_I;
 		`MIPS_OP_ADDI: op_code_type = `OP_CODE_TYPE_I;
+		`MIPS_OP_LW: op_code_type = `OP_CODE_TYPE_I;
+		`MIPS_OP_SW: op_code_type = `OP_CODE_TYPE_I;
 	endcase
 	
 	//MEM CONTROL
@@ -233,6 +254,7 @@ always @(posedge clk) begin
 			end
 			`S_MEMORY: begin
 				/*control other registers here! */
+				DR <= mem_rd_data;
 				
 			end
 			default: begin
