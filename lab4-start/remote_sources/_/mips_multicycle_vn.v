@@ -145,7 +145,15 @@ always @(*) begin
 	
 	reg_rd_addr0 = IR[25:21]; //rs
 	reg_rd_addr1 = IR[20:16]; //rt
-	reg_wr_addr = IR[15:11]; //rd
+	case (op_code_type)
+		`OP_CODE_TYPE_R: begin
+			reg_wr_addr = IR[15:11]; //rd
+		end
+		`OP_CODE_TYPE_I: begin
+			reg_wr_addr = IR[20:16]; //rd
+		end
+	endcase
+	
 	reg_wr_data = alu_last_result;
 	immi = IR[15:0]; //immi
 	if (immi[15]==0) begin
@@ -158,18 +166,31 @@ always @(*) begin
 	
 	//ALU CONTROL
 	if (state==`S_EXECUTE) begin
-		case (IR[5:0])
-			`MIPS_FUNCT_AND: alu_op = `ALU_OP_AND;
-			`MIPS_FUNCT_OR: alu_op = `ALU_OP_OR;
-			`MIPS_FUNCT_XOR: alu_op = `ALU_OP_XOR;
-			`MIPS_FUNCT_NOR: alu_op = `ALU_OP_NOR;
-			`MIPS_FUNCT_SLL: alu_op = `ALU_OP_SLL;
-			`MIPS_FUNCT_SRL: alu_op = `ALU_OP_SRL;
-			`MIPS_FUNCT_SRA: alu_op = `ALU_OP_SRA;
-			`MIPS_FUNCT_SLT: alu_op = `ALU_OP_SLT;
-			`MIPS_FUNCT_ADD: alu_op = `ALU_OP_ADD;
-			`MIPS_FUNCT_SUB: alu_op = `ALU_OP_SUB;
-		endcase
+		case (op_code_type)
+			`OP_CODE_TYPE_R: begin
+				case (IR[5:0])
+					`MIPS_FUNCT_AND: alu_op = `ALU_OP_AND;
+					`MIPS_FUNCT_OR: alu_op = `ALU_OP_OR;
+					`MIPS_FUNCT_XOR: alu_op = `ALU_OP_XOR;
+					`MIPS_FUNCT_NOR: alu_op = `ALU_OP_NOR;
+					`MIPS_FUNCT_SLL: alu_op = `ALU_OP_SLL;
+					`MIPS_FUNCT_SRL: alu_op = `ALU_OP_SRL;
+					`MIPS_FUNCT_SRA: alu_op = `ALU_OP_SRA;
+					`MIPS_FUNCT_SLT: alu_op = `ALU_OP_SLT;
+					`MIPS_FUNCT_ADD: alu_op = `ALU_OP_ADD;
+					`MIPS_FUNCT_SUB: alu_op = `ALU_OP_SUB;
+				endcase
+			end
+			`OP_CODE_TYPE_I: begin
+				case (IR[31:26])
+					`MIPS_OP_ANDI: alu_op = `ALU_OP_AND;
+					`MIPS_OP_ORI: alu_op = `ALU_OP_OR;
+					`MIPS_OP_XORI: alu_op = `ALU_OP_XOR;
+					`MIPS_OP_SLTI: alu_op = `ALU_OP_SLT;
+					`MIPS_OP_ADDI: alu_op = `ALU_OP_ADD;
+				endcase
+			end
+		endcase 
 	end
 	
 	//OP CODE TYPE CONTROL
