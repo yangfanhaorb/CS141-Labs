@@ -61,12 +61,18 @@ output wire [32*32-1:0] full_register_file;
 
 // control signals
 reg [1:0] op_code_type; 
+reg branching;
 
 // IR decode
 wire [4:0] rs, rt, rd;
 wire [5:0] shamt;
 reg [15:0] immi;
 reg [31:0] sign_extended_immi;
+wire [25:0] jaddr;
+
+
+wire[31:0] sign_ext_wire;
+assign sign_ext_wire = sign_extended_immi;
 
 register_file #(.N(N)) REGISTER_FILE(
 	.clk(clk), .rst(rst), .wr_ena(reg_wr_ena),
@@ -91,12 +97,24 @@ always @(*) begin
 			mem_rd_addr = next_PC;
 			mem_wr_ena =0;
 			reg_wr_ena = 0;
+			branching = 0;
 		end
 		`S_FETCH2 : begin
 			next_state = `S_DECODE;
 		end
 		`S_DECODE : begin
-			next_state = `S_EXECUTE;
+			case (IR[31:26])
+				`MIPS_OP_J: begin
+					next_state = `S_FETCH1;
+				end
+				`MIPS_OP_RTYPE: begin
+					if (IR[5:0]==`MIPS_FUNCT_JR)begin
+						next_state = `S_FETCH1;
+					end
+				end
+				default: next_state = `S_EXECUTE;
+			endcase
+			
 			
 		end
 		`S_EXECUTE : begin
@@ -120,6 +138,17 @@ always @(*) begin
 					alu_src_b = sign_extended_immi;
 					mem_rd_addr = alu_result;
 				end
+				`OP_CODE_TYPE_J: begin
+					if (IR[31:26] ==`MIPS_OP_JAL) begin
+						alu_src_a = next_PC;
+						alu_src_b = 32'd0;
+					end
+				end
+				`OP_CODE_TYPE_BRANCH: begin
+						alu_src_a = reg_A;
+						alu_src_b = reg_B;
+				end
+				
 			endcase
 			
 		end
@@ -136,6 +165,18 @@ always @(*) begin
 					mem_wr_ena =1;
 				end
 				`MIPS_OP_LW: begin
+					reg_wr_ena = 0;
+				end
+				`MIPS_OP_BEQ: begin
+					reg_wr_ena = 0;
+					if (alu_result == 32'd0) begin
+						branching = 1;
+					end
+				end
+				`MIPS_OP_BNE: begin
+					if (alu_result != 32'd0) begin
+						branching = 1;
+					end
 					reg_wr_ena = 0;
 				end
 				default: begin
@@ -163,6 +204,7 @@ end
 	assign rt = IR[20:16];
 	assign rd = IR[15:11];
 	assign shamt = IR[10:6];
+	assign jaddr = IR[25:0];
 
 always @(*) begin
 	//REGISTER DECODER
@@ -176,11 +218,18 @@ always @(*) begin
 	else begin
 		case (op_code_type)
 			`OP_CODE_TYPE_R: begin
-				reg_wr_addr = IR[15:11]; //rd
+				if (IR[31:26] == `MIPS_OP_JAL)begin
+					reg_wr_addr = 32'd31; //ra
+				end
+				else begin
+					reg_wr_addr = IR[15:11]; //rd
+				end
 			end
 			`OP_CODE_TYPE_I: begin
 				reg_wr_addr = IR[20:16]; //rt
 			end
+			
+			
 		endcase
 		reg_wr_data = alu_last_result;
 	end
@@ -223,6 +272,9 @@ always @(*) begin
 					`MIPS_OP_SW: alu_op = `ALU_OP_ADD;
 				endcase
 			end
+			`OP_CODE_TYPE_BRANCH: begin
+				alu_op = `ALU_OP_SUB;
+			end
 		endcase 
 	end
 	
@@ -236,6 +288,8 @@ always @(*) begin
 		`MIPS_OP_ADDI: op_code_type = `OP_CODE_TYPE_I;
 		`MIPS_OP_LW: op_code_type = `OP_CODE_TYPE_I;
 		`MIPS_OP_SW: op_code_type = `OP_CODE_TYPE_I;
+		`MIPS_OP_J: op_code_type = `OP_CODE_TYPE_J;
+		`MIPS_OP_JAL: op_code_type = `OP_CODE_TYPE_J;
 	endcase
 	
 	//MEM CONTROL
@@ -270,11 +324,20 @@ always @(posedge clk) begin
 			`S_FETCH2: begin
 				/*control other registers here! */
 				IR <= mem_rd_data;
+				
+				
 				next_PC <= alu_result;
+			
 				
 			end
 			`S_DECODE: begin
 				/*control other registers here! */
+				if (op_code_type == `OP_CODE_TYPE_J) begin
+					next_PC <= jaddr;
+				end
+				else if ((op_code_type == `OP_CODE_TYPE_R)&(IR[5:0]==`MIPS_FUNCT_JR))begin
+					next_PC <= reg_rd_data0;
+				end
 				
 				reg_A <= reg_rd_data0;
 				reg_B <= reg_rd_data1;
@@ -290,6 +353,10 @@ always @(posedge clk) begin
 			`S_MEMORY: begin
 				/*control other registers here! */
 				DR <= mem_rd_data;
+				
+				if (branching) begin
+					next_PC <= sign_ext_wire;
+				end
 				
 			end
 			

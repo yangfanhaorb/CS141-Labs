@@ -36,6 +36,7 @@
 `define OP_CODE_TYPE_R        2'd0
 `define OP_CODE_TYPE_I        2'd1
 `define OP_CODE_TYPE_BRANCH   2'd2
+`define OP_CODE_TYPE_J        2'd3
 
 `endif
 
