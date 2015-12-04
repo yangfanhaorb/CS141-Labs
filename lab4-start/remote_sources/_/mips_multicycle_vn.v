@@ -229,8 +229,9 @@ always @(*) begin
 				reg_wr_addr = IR[20:16]; //rt
 			end
 			
-			reg_wr_data = alu_last_result;
+			
 		endcase
+		reg_wr_data = alu_last_result;
 	end
 	
 	
