@@ -73,8 +73,6 @@ reg [31:0] jPC;
 wire [31:0] jaddr;
 wire [27:0] newtest;
 
-
-
 wire[31:0] sign_ext_wire;
 assign sign_ext_wire = sign_extended_immi;
 
@@ -102,33 +100,94 @@ always @(*) begin
 			mem_wr_ena =0;
 			reg_wr_ena = 0;
 			branching = 0;
+			reg_wr_data = alu_last_result;
 		end
 		`S_FETCH2 : begin
 			next_state = `S_DECODE;
+			reg_wr_data = alu_last_result;
 		end
 		`S_DECODE : begin
 		
+			reg_wr_data = alu_last_result;
 			//next_state = `S_EXECUTE;
 		
 			case (IR[31:26])
 				`MIPS_OP_J: begin
 					next_state = `S_FETCH1;
 				end
-				`MIPS_OP_RTYPE: begin
-					if (IR[5:0]==`MIPS_FUNCT_JR)begin
-						next_state = `S_FETCH1;
-					end
-					else begin
-						next_state = `S_EXECUTE;
-					end
+				`MIPS_OP_BEQ: begin
+					next_state = `S_EXECUTE;
+					alu_op = `ALU_OP_ADD;
+					alu_src_a = next_PC;
+					alu_src_b = sign_extended_immi<<2;
 				end
+				`MIPS_OP_BNE: begin
+					next_state = `S_EXECUTE;
+					alu_op = `ALU_OP_ADD;
+					alu_src_a = next_PC;
+					alu_src_b = sign_extended_immi<<2;
+				end
+				
 				default: next_state = `S_EXECUTE;
 			endcase
 			
 			
 		end
 		`S_EXECUTE : begin
-			next_state = `S_MEMORY;
+		
+		
+			reg_wr_data = alu_last_result;
+			//ALU CONTROL
+			case (op_code_type)
+				`OP_CODE_TYPE_R: begin
+					case (IR[5:0])
+						`MIPS_FUNCT_AND: alu_op = `ALU_OP_AND;
+						`MIPS_FUNCT_OR: alu_op = `ALU_OP_OR;
+						`MIPS_FUNCT_XOR: alu_op = `ALU_OP_XOR;
+						`MIPS_FUNCT_NOR: alu_op = `ALU_OP_NOR;
+						`MIPS_FUNCT_SLL: alu_op = `ALU_OP_SLL;
+						`MIPS_FUNCT_SRL: alu_op = `ALU_OP_SRL;
+						`MIPS_FUNCT_SRA: alu_op = `ALU_OP_SRA;
+						`MIPS_FUNCT_SLT: alu_op = `ALU_OP_SLT;
+						`MIPS_FUNCT_ADD: alu_op = `ALU_OP_ADD;
+						`MIPS_FUNCT_SUB: alu_op = `ALU_OP_SUB;
+					endcase
+				end
+				`OP_CODE_TYPE_I: begin
+					case (IR[31:26])
+						`MIPS_OP_ANDI: alu_op = `ALU_OP_AND;
+						`MIPS_OP_ORI: alu_op = `ALU_OP_OR;
+						`MIPS_OP_XORI: alu_op = `ALU_OP_XOR;
+						`MIPS_OP_SLTI: alu_op = `ALU_OP_SLT;
+						`MIPS_OP_ADDI: alu_op = `ALU_OP_ADD;
+						`MIPS_OP_LW: alu_op = `ALU_OP_ADD;
+						`MIPS_OP_SW: alu_op = `ALU_OP_ADD;
+					endcase
+				end
+				//`OP_CODE_TYPE_BRANCH: begin
+					//alu_op = `ALU_OP_SUB;
+				//end
+			endcase 
+			case (IR[31:26]) 
+				`MIPS_OP_RTYPE: begin
+						if (IR[5:0]==`MIPS_FUNCT_JR)begin
+							next_state = `S_FETCH1;
+						end
+						else begin
+							next_state = `S_MEMORY;
+						end
+					end
+				`MIPS_OP_BEQ: begin
+					next_state = `S_FETCH1;
+					alu_op = `ALU_OP_SUB;
+				end
+				`MIPS_OP_BNE: begin
+					next_state = `S_FETCH1;
+					alu_op = `ALU_OP_SUB;
+				end
+				default: next_state = `S_MEMORY;
+			endcase
+				
 			
 			// alu src control
 			case (op_code_type)
@@ -143,6 +202,7 @@ always @(*) begin
 						alu_src_b = reg_B;
 					end
 				end
+				
 				`OP_CODE_TYPE_I: begin
 					alu_src_a = reg_A;
 					alu_src_b = sign_extended_immi;
@@ -150,19 +210,32 @@ always @(*) begin
 				end
 				`OP_CODE_TYPE_J: begin
 					if (IR[31:26] ==`MIPS_OP_JAL) begin
-						alu_src_a = next_PC;
-						alu_src_b = 32'd0;
+						alu_src_a = last_PC;
+						alu_src_b = 32'd4;
 					end
 				end
 				`OP_CODE_TYPE_BRANCH: begin
 						alu_src_a = reg_A;
 						alu_src_b = reg_B;
+						if (IR[31:26] ==`MIPS_OP_BEQ) begin
+							if (alu_result == 32'd0) begin
+								branching = 1;
+							end
+						end
+						else if (IR[31:26] ==`MIPS_OP_BNE) begin
+							if (alu_result != 32'd0) begin
+								branching = 1;
+							end
+						end
 				end
 				
 			endcase
 			
+			
 		end
 		`S_MEMORY : begin
+		
+			reg_wr_data = alu_last_result;
 			case (IR[31:26])
 				`MIPS_OP_LW: next_state = `S_WRITEBACK;
 				default: next_state = `S_FETCH1;
@@ -177,18 +250,7 @@ always @(*) begin
 				`MIPS_OP_LW: begin
 					reg_wr_ena = 0;
 				end
-				`MIPS_OP_BEQ: begin
-					reg_wr_ena = 0;
-					if (alu_result == 32'd0) begin
-						branching = 1;
-					end
-				end
-				`MIPS_OP_BNE: begin
-					if (alu_result != 32'd0) begin
-						branching = 1;
-					end
-					reg_wr_ena = 0;
-				end
+				
 				default: begin
 					reg_wr_ena = 1;
 				end
@@ -232,20 +294,18 @@ always @(*) begin
 	else begin
 		case (op_code_type)
 			`OP_CODE_TYPE_R: begin
-				if (IR[31:26] == `MIPS_OP_JAL)begin
-					reg_wr_addr = 32'd31; //ra
-				end
-				else begin
 					reg_wr_addr = IR[15:11]; //rd
-				end
 			end
 			`OP_CODE_TYPE_I: begin
 				reg_wr_addr = IR[20:16]; //rt
 			end
+			`OP_CODE_TYPE_J: begin
+				reg_wr_addr = 32'd31; //ra
+			end
 			
 			
 		endcase
-		reg_wr_data = alu_last_result;
+		
 	end
 	
 	
@@ -254,43 +314,11 @@ always @(*) begin
 		sign_extended_immi = 32'h00000000 | immi;
 	end
 	else begin
-		sign_extended_immi = 32'h11110000 | immi;
+		sign_extended_immi = 32'hffff0000 | immi;
 	end
 	
 	
-	//ALU CONTROL
-	if (state==`S_EXECUTE) begin
-		case (op_code_type)
-			`OP_CODE_TYPE_R: begin
-				case (IR[5:0])
-					`MIPS_FUNCT_AND: alu_op = `ALU_OP_AND;
-					`MIPS_FUNCT_OR: alu_op = `ALU_OP_OR;
-					`MIPS_FUNCT_XOR: alu_op = `ALU_OP_XOR;
-					`MIPS_FUNCT_NOR: alu_op = `ALU_OP_NOR;
-					`MIPS_FUNCT_SLL: alu_op = `ALU_OP_SLL;
-					`MIPS_FUNCT_SRL: alu_op = `ALU_OP_SRL;
-					`MIPS_FUNCT_SRA: alu_op = `ALU_OP_SRA;
-					`MIPS_FUNCT_SLT: alu_op = `ALU_OP_SLT;
-					`MIPS_FUNCT_ADD: alu_op = `ALU_OP_ADD;
-					`MIPS_FUNCT_SUB: alu_op = `ALU_OP_SUB;
-				endcase
-			end
-			`OP_CODE_TYPE_I: begin
-				case (IR[31:26])
-					`MIPS_OP_ANDI: alu_op = `ALU_OP_AND;
-					`MIPS_OP_ORI: alu_op = `ALU_OP_OR;
-					`MIPS_OP_XORI: alu_op = `ALU_OP_XOR;
-					`MIPS_OP_SLTI: alu_op = `ALU_OP_SLT;
-					`MIPS_OP_ADDI: alu_op = `ALU_OP_ADD;
-					`MIPS_OP_LW: alu_op = `ALU_OP_ADD;
-					`MIPS_OP_SW: alu_op = `ALU_OP_ADD;
-				endcase
-			end
-			`OP_CODE_TYPE_BRANCH: begin
-				alu_op = `ALU_OP_SUB;
-			end
-		endcase 
-	end
+	
 	
 	//OP CODE TYPE CONTROL
 	case (IR[31:26])
@@ -304,6 +332,8 @@ always @(*) begin
 		`MIPS_OP_SW: op_code_type = `OP_CODE_TYPE_I;
 		`MIPS_OP_J: op_code_type = `OP_CODE_TYPE_J;
 		`MIPS_OP_JAL: op_code_type = `OP_CODE_TYPE_J;
+		`MIPS_OP_BEQ: op_code_type = `OP_CODE_TYPE_BRANCH;
+		`MIPS_OP_BNE: op_code_type = `OP_CODE_TYPE_BRANCH;
 	endcase
 	
 	//MEM CONTROL
@@ -352,9 +382,13 @@ always @(posedge clk) begin
 				else if ((op_code_type == `OP_CODE_TYPE_R)&(IR[5:0]==`MIPS_FUNCT_JR))begin
 					next_PC <= reg_rd_data0;
 				end
-				
+				else if (op_code_type == `OP_CODE_TYPE_BRANCH) begin
+					alu_last_result <= alu_result;
+				end
 				reg_A <= reg_rd_data0;
 				reg_B <= reg_rd_data1;
+				
+				
 				
 						
 			end
@@ -362,15 +396,15 @@ always @(posedge clk) begin
 				/*control other registers here! */
 				alu_last_result <= alu_result;
 				
+				if (branching) begin
+					next_PC <= alu_last_result;
+				end
+				
 				
 			end
 			`S_MEMORY: begin
 				/*control other registers here! */
 				DR <= mem_rd_data;
-				
-				if (branching) begin
-					next_PC <= sign_ext_wire;
-				end
 				
 			end
 			
@@ -382,7 +416,7 @@ always @(posedge clk) begin
 			
 			default: begin
 				/*always have a default case */
-				next_state = `S_FAILURE;
+				//next_state = `S_FAILURE;
 			end
 		endcase
 	end
