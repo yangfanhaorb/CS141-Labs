@@ -228,6 +228,8 @@ always @(*) begin
 			`OP_CODE_TYPE_I: begin
 				reg_wr_addr = IR[20:16]; //rt
 			end
+			
+			reg_wr_data = alu_last_result;
 		endcase
 	end
 	
