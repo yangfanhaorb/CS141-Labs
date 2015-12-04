@@ -68,7 +68,11 @@ wire [4:0] rs, rt, rd;
 wire [5:0] shamt;
 reg [15:0] immi;
 reg [31:0] sign_extended_immi;
-wire [25:0] jaddr;
+
+reg [31:0] jPC;
+wire [31:0] jaddr;
+wire [27:0] newtest;
+
 
 
 wire[31:0] sign_ext_wire;
@@ -103,6 +107,9 @@ always @(*) begin
 			next_state = `S_DECODE;
 		end
 		`S_DECODE : begin
+		
+			//next_state = `S_EXECUTE;
+		
 			case (IR[31:26])
 				`MIPS_OP_J: begin
 					next_state = `S_FETCH1;
@@ -110,6 +117,9 @@ always @(*) begin
 				`MIPS_OP_RTYPE: begin
 					if (IR[5:0]==`MIPS_FUNCT_JR)begin
 						next_state = `S_FETCH1;
+					end
+					else begin
+						next_state = `S_EXECUTE;
 					end
 				end
 				default: next_state = `S_EXECUTE;
@@ -204,7 +214,11 @@ end
 	assign rt = IR[20:16];
 	assign rd = IR[15:11];
 	assign shamt = IR[10:6];
-	assign jaddr = IR[25:0];
+	//assign jaddr = (PC[31:28] || (IR[25:0] << 2));
+	
+	assign newtest =(IR[25:0] << 2);
+	assign jaddr = (next_PC[31:28] | newtest);
+	
 
 always @(*) begin
 	//REGISTER DECODER
